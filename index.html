@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James Bytes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('/static/bg/bgmain.png'); /* Update with the correct image path */
+            background-size: cover;
+            background-position: center;
+            cursor: pointer; /* Change cursor to indicate clickable area */
+        }
+
+        .start-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f44336;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        .start-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-button:active {
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center h-screen bg-gray-800 relative" onclick="playAudio()">
+
+    <div class="start-button" onclick="startGame(event)">
+        Start Game
+    </div>
+
+    <script>
+        var audio = new Audio('/static/1.mp3');
+
+        // Function to play audio when the page is clicked
+        function playAudio() {
+            audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        }
+
+        // Function to handle game start
+        function startGame(event) {
+            event.stopPropagation(); // Prevent triggering playAudio when clicking the button
+            playAudio(); // Play audio
+            setTimeout(() => {
+                window.location.href = "game.html"; // Redirect to the game page after audio starts
+            }, 1000); // Adjust the timeout duration as needed
+        }
+    </script>
+
+</body>
+
+</html>

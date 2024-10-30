@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James Bytes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Swal -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <style>
+        body {
+            background-image: url('/static/bg/end.png'); /* Update with the correct image path */
+            background-size: cover;
+            background-position: center;
+            cursor: pointer; /* Change cursor to indicate clickable area */
+        }
+
+        .start-button {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f44336;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        .start-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-button:active {
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center h-screen bg-gray-800 relative" onclick="playAudio()">
+
+    <div class="start-button" onclick="endGame(event)">
+        End Game
+    </div>
+
+    <script>
+        var audio = new Audio('/static/5.wav');
+
+        playAudio();
+
+        // Function to play audio when the page is clicked
+        function playAudio() {
+            audio.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        }
+
+        // Function to start the game
+        function endGame(event) {
+            Swal.fire({
+                title: 'Game Over',
+                text: 'Thank you for playing!',
+                icon: 'success',
+                confirmButtonText: 'Close'
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>
