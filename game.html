@@ -27,7 +27,7 @@
 <body class="flex flex-col items-center justify-center h-screen">
 
     <!-- Logo -->
-    <img src="/static/bg/logo.png" alt="James Bytes Logo" class="mb-8" style="width: 200px;">
+    <img src="static/bg/logo.png" alt="James Bytes Logo" class="mb-8" style="width: 200px;">
 
     <h1 class="text-white text-3xl font-bold mb-4">The Suspects</h1>
 
@@ -35,35 +35,35 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
             <button onclick="investigate('Clark Cloud')" class="w-full">
-                <img src="/static/bg/cloud.png" alt="Clark Cloud" class="w-32 h-32 mx-auto rounded-full mb-2">
+                <img src="static/bg/cloud.png" alt="Clark Cloud" class="w-32 h-32 mx-auto rounded-full mb-2">
                 <h2 class="text-white font-semibold">Clark Cloud</h2>
                 <p class="text-gray-400">The Office Manager</p>
             </button>
         </div>
         <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
             <button onclick="investigate('Fiona Firewall')" class="w-full">
-                <img src="/static/bg/firewall.png" alt="Fiona Firewall" class="w-32 h-32 mx-auto rounded-full mb-2">
+                <img src="static/bg/firewall.png" alt="Fiona Firewall" class="w-32 h-32 mx-auto rounded-full mb-2">
                 <h2 class="text-white font-semibold">Fiona Firewall</h2>
                 <p class="text-gray-400">The Receptionist</p>
             </button>
         </div>
         <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
             <button onclick="investigate('Eva Encryption')" class="w-full">
-                <img src="/static/bg/encryption.png" alt="Eva Encryption" class="w-32 h-32 mx-auto rounded-full mb-2">
+                <img src="static/bg/encryption.png" alt="Eva Encryption" class="w-32 h-32 mx-auto rounded-full mb-2">
                 <h2 class="text-white font-semibold">Eva Encryption</h2>
                 <p class="text-gray-400">The Sales Representative</p>
             </button>
         </div>
         <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
             <button onclick="investigate('Steve Sweep')" class="w-full">
-                <img src="/static/bg/sweep.png" alt="Steve Sweep" class="w-32 h-32 mx-auto rounded-full mb-2">
+                <img src="static/bg/sweep.png" alt="Steve Sweep" class="w-32 h-32 mx-auto rounded-full mb-2">
                 <h2 class="text-white font-semibold">Steve Sweep</h2>
                 <p class="text-gray-400">The Maintenance Manager</p>
             </button>
         </div>
         <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
             <button onclick="investigate('Frank Phisher')" class="w-full">
-                <img src="/static/bg/director.png" alt="Frank Phisher" class="w-32 h-32 mx-auto rounded-full mb-2">
+                <img src="static/bg/director.png" alt="Frank Phisher" class="w-32 h-32 mx-auto rounded-full mb-2">
                 <h2 class="text-white font-semibold">Frank Phisher</h2>
                 <p class="text-gray-400">The Marketing Director</p>
             </button>
@@ -85,7 +85,7 @@
     <script>
 
         // play audio 2.mp3
-        var audio = new Audio('/static/2.mp3');
+        var audio = new Audio('static/2.mp3');
         audio.play().catch(error => {
             console.error("Audio playback failed:", error);
         });
