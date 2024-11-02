@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Lineup</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1F2937; /* Tailwind gray-800 */
+        }
+        
+        .hover-effect {
+            position: absolute; /* Changed from relative to absolute */
+            /* Removed overflow: hidden; */
+            display: inline-block;
+            width: 10%;
+            height: 20%;
+            /* Ensure the hover area is visible by adding a background or border for debugging */
+            /* background: rgba(255, 0, 0, 0.2); /* Uncomment for debugging */
+            cursor: pointer;
+        }
+        
+        .hover-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.5); /* Shiny effect */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .hover-effect:hover::after {
+            opacity: 1;
+        }
+        
+        .tooltip {
+            position: absolute;
+            bottom: 100%; /* Position above the character area */
+            left: 50%;
+            transform: translate(-50%, -5px); /* Center and offset */
+            background-color: rgba(0, 0, 0, 0.85); /* Black background */
+            color: #fff;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+            white-space: nowrap;
+            z-index: 10; /* Added z-index */
+        }
+
+        .hover-effect:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .fade-out {
+            transition: opacity 0.5s ease-out;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start min-h-screen">
+    <!-- Logo and Paragraph -->
+    <img src="/static/bg/logo.png" alt="James Bytes" class="mt-4">
+    <p class="mt-2 text-white text-center">Who do you think is responsible for the cybercrime? Click the circles to pick your suspect.</p>
+
+    <!-- view clues button -->
+    <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4" onclick="navigateToPage('clues.html')">View Clues</button>
+    
+    <!-- Main Image Container -->
+    <div class="relative w-full max-w-7xl mt-6">
+        <img src="/static/bg/verdictImage.png" alt="Character Lineup" class="w-full">
+          <!-- Character Zones with Hover Effects -->
+          <div class="absolute inset-0">
+            <div class="hover-effect" style="top: 20%; left: 10%; width: 10%; height: 20%;" onclick="navigateToPage('not.html?name=clark')">
+                <span class="tooltip">Clark Cloud - The Office Manager</span>
+            </div>
+            <div class="hover-effect" style="top: 20%; left: 26.75%; width: 10%; height: 20%;" onclick="navigateToPage('not.html?name=fiona')">
+                <span class="tooltip">Fiona Firewall - The Receptionist</span>
+            </div>
+            <div class="hover-effect" style="top: 20%; left: 44.5%; width: 10%; height: 20%;" onclick="navigateToPage('guilty.html')">
+                <span class="tooltip">Eva Encryption - The Sales Representative</span>
+            </div>
+            <div class="hover-effect" style="top: 20%; left: 61.5%; width: 10%; height: 20%;" onclick="navigateToPage('guilty.html')">
+                <span class="tooltip">Steve Sweep - The Maintenance Manager</span>
+            </div>
+            <div class="hover-effect" style="top: 20%; left: 78.5%; width: 10%; height: 20%;" onclick="navigateToPage('not.html?name=frank')">
+                <span class="tooltip">Frank Phisher - The Marketing Director</span>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- JavaScript for Navigation with Animation -->
+    <script>
+        function navigateToPage(url) {
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+                window.location.href = url;
+            }, 500);
+        }
+    </script>
+
+    <script>
+        // play audio
+        var audio = new Audio('/static/bg/verdict.mp3');
+        // loop
+        audio.loop = true;
+        audio.play().catch(error => {
+            console.error("Error playing audio:", error);
+        });
+
+    </script>
+</body>
+</html>

@@ -113,14 +113,16 @@
                             this.stage = 'step1';
                             this.startTypewriter();
                         }, 1000); // 1 second for fade-out
-                    }, 3000); // 3 seconds display
+                    }, 1500); // 3 seconds display
                 },
 
                 startTypewriter() {
                     // Initialize the typing sound
-                    this.typingSound = new Audio('static/type-writing-6834.mp3');
-                    this.typingSound.loop = true; // Loop the sound during typing
-                    this.typingSound.volume = 0.5; // Adjust volume as needed
+                    this.typingSound = new Audio('static/type-writing-6834-[AudioTrimmer.com].mp3');                    
+                    this.typingSound.volume = 1; // Adjust volume as needed
+                    this.typingSound.play().catch(error => {
+                        console.error('Typing sound playback failed:', error);
+                    });
 
                     // Start the typewriter effect
                     this.typeText();

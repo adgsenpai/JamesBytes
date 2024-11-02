@@ -6,19 +6,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>James Bytes</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Swal -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- swal -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            background-image: url('static/bg/end.png'); /* Update with the correct image path */
+            background-image: url('static/bg/cyberbackground.webp');
             background-size: cover;
             background-position: center;
-            cursor: pointer; /* Change cursor to indicate clickable area */
+            cursor: pointer;
+        }
+
+        .logo-text {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .agent-text {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .agent-text .title {
+            font-size: 24px;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .agent-text .agent-code {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .agent-text .subtext {
+            font-size: 18px;
+            color: red;
+            margin-top: 10px;
+            font-weight: 400;
         }
 
         .start-button {
             position: absolute;
-            bottom: 10%;
+            top: 65%;
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: #f44336;
@@ -46,35 +89,53 @@
     </style>
 </head>
 
-<body class="flex items-center justify-center h-screen bg-gray-800 relative" onclick="playAudio()">
+<body class="flex items-center justify-center h-screen bg-gray-800 relative">
 
-    <div class="start-button" onclick="endGame(event)">
+    <!-- James Bytes Logo -->
+    <img src="static/bg/logo.png" alt="James Bytes Logo" class="logo-text">
+
+
+    <!-- Cyber-Secret Agent Text -->
+    <div class="agent-text">
+        <div class="title"
+        style="font-weight: 1000; font-style: italic; font-size: 25px; "
+        >Cyber-Secret</div>
+        <div class="agent-code"
+        style="font-weight: 1000; font-style: italic; font-size: 50px; "
+        >AGENT
+        </div>
+        <div
+        style="font-weight: 1000; font-style: italic;"
+        >0101011</div>
+    </div>
+
+    <!-- Start Button -->
+    <div class="start-button" onclick="startJourney(event)">
         End Game
     </div>
 
     <script>
-        var audio = new Audio('static/5.wav');
-
-        playAudio();
-
-        // Function to play audio when the page is clicked
-        function playAudio() {
-            audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
-            });
-        }
-
-        // Function to start the game
-        function endGame(event) {
+        // Function to handle game start
+        function startJourney(event) {
+            //Swal ask if they want to play again
             Swal.fire({
-                title: 'Game Over',
-                text: 'Thank you for playing!',
-                icon: 'success',
-                confirmButtonText: 'Close'
-            });
+                title: 'Do you want to play again?',
+                showDenyButton: true,
+                confirmButtonText: `Yes`,
+                denyButtonText: `No`,
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    window.location.href = "index.html";
+                } 
+            })
         }
 
-
+        // play 5.wav
+        var audio = new Audio('static/5.wav');
+        audio.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
     </script>
 
 </body>

@@ -108,7 +108,7 @@
                 <h3 id="suspectTitle" class="text-lg"></h3>
                 <p id="suspectDescription"></p>
                 <br>
-                <button class="btn-notes" onclick="showCaseNotes()">Clark's Case Notes</button>
+                <button class="btn-notes" onclick="showCaseNotes()">Case Notes</button>
                 <br>
                 <br>
                 <button class="btn-next" onclick="backSuspects()">Go back to Suspects</button>
@@ -137,6 +137,11 @@
 
             // Show case notes in a SweetAlert modal
             showCaseNotes() {
+                // play fileflip.mp3
+                var audio = new Audio('static/fileflip.mp3');
+                audio.play().catch(error => {
+                    console.error("Audio playback failed:", error);
+                });
                 Swal.fire({
                     title: `${this.name}'s Case Notes`,
                     imageUrl: this.notesImage,
@@ -213,7 +218,7 @@
         }
 
         // Play audio
-        var audio = new Audio('static/2.mp3');
+        var audio = new Audio('static/Secret Policeman Edited.mp3');
         audio.play().catch(error => {
             console.error("Audio playback failed:", error);
         });

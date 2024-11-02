@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Are Right!</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 flex flex-col items-center justify-center h-screen text-white">
+    <div class="max-w-3xl mx-auto p-6 bg-gray-800 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-red-600">You Are Right!<br> But There’s More to It.</h1>
+        <p class="mt-4">
+            <strong>Steve</strong> accidentally swept <strong>Eva’s</strong> unencrypted USB drive into the trash can. The USB drive ended up at a second-hand electronics store where a technician bought it, exploited the data, and sold it for monetary gain.
+        </p>
+        <p class="mt-2">
+            <strong>Eva’s</strong> failure to report the missing device and <strong>Steve’s</strong> mishandling of equipment combined to create the breach.
+        </p>
+        
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="relative">
+                <img src="/static/bg/guilty.png" alt="Guilty"
+                    class="w-64 object-cover rounded-lg shadow-lg">                
+            </div>
+
+        </div>
+
+        <button class="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md"
+        onclick="window.location.href = '/end.html'">                    
+            Next
+        </button>
+    </div>
+</body>
+
+<script>
+    // play right.mp3
+    var audio = new Audio('static/bg/right.mp3');
+    audio.play();
+
+    // once the audio is done, play 4.mp3
+    audio.onended = function() {
+        var audio2 = new Audio('static/4.mp3');
+        audio2.play();
+    };
+
+</script>
+
+</html>

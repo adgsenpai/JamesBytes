@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 flex items-center justify-center h-screen">
+    <!-- Container where the component will be rendered -->
+    <div id="card-container" class="max-w-xs mx-auto"></div>
+
+    <script>
+        // Function to get URL parameter by name
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Constructor function for the card
+        class InfoCard {
+            constructor(image, title, subtitle, crossGif) {
+                this.image = image;
+                this.title = title;
+                this.subtitle = subtitle;
+                this.crossGif = crossGif; // Add crossGif parameter
+            }
+
+            render() {
+                // Create card container
+                const card = document.createElement('div');
+                card.className = 'text-center text-white p-6 bg-gray-800 rounded-lg shadow-lg';
+
+                // Image Section
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'relative';
+                
+                const img = document.createElement('img');
+                img.src = this.image;
+                img.alt = 'Image';
+                img.className = 'w-full h-auto rounded-md opacity-50';
+                
+                const crossOverlay = document.createElement('div');
+                crossOverlay.className = 'absolute inset-0 flex items-center justify-center';
+                
+                const crossImage = document.createElement('img');
+                crossImage.src = this.crossGif; // Use the GIF image for the cross
+                crossImage.alt = 'Cross Overlay';
+                crossImage.className = 'w-24 h-24'; // Adjust size as needed
+                
+                crossOverlay.appendChild(crossImage);
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(crossOverlay);
+
+                // Title Section
+                const title = document.createElement('h1');
+                title.className = 'text-2xl font-semibold mt-4';
+                title.textContent = this.title;
+
+                // Subtitle Section
+                const subtitle = document.createElement('p');
+                subtitle.className = 'text-gray-400 mt-2';
+                subtitle.textContent = this.subtitle;
+
+                // Button Section
+                const button = document.createElement('button');
+                button.className = 'mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md';
+                button.textContent = 'Try Again';
+                // redirect to /verdict.html
+                button.onclick = () => {
+                    window.location.href = 'verdict.html';
+                };
+
+                // Append all sections to the card
+                card.appendChild(imageContainer);
+                card.appendChild(title);
+                card.appendChild(subtitle);
+                card.appendChild(button);
+
+                // Render the card in the container
+                document.getElementById('card-container').appendChild(card);
+            }
+        }
+
+        // Retrieve the name parameter from the URL
+        const name = getQueryParam('name');
+
+        // Create content based on the name parameter
+        let title = "It Wasn't Fiona.";
+        let subtitle = "Fiona's thoroughness in checking visitor credentials and her secure storage of visitor logs helped prevent unauthorized access to the office.";
+        let image = '/static/bg/firewall.png'; // Replace with the actual image URL
+        let crossGif = '/static/bg/52cddb4d267e3c3c3637f2abaf61aa5d.gif';
+
+        // Check the name parameter and adjust content if needed
+        if (name && name.toLowerCase() === 'fiona') {
+            title = "It Wasn't Fiona.";
+            subtitle = "Fiona's thoroughness in checking visitor credentials and her secure storage of visitor logs helped prevent unauthorized access to the office.";
+            image = '/static/bg/firewall.png'; // Replace with the actual image URL
+        }
+        if (name && name.toLowerCase() === 'clark') {
+            title = "It Wasn’t Clark.";
+            subtitle = "Clark’s careful handling of sensitive documents and his regular review of security protocols helped him prevent data breaches.";
+            image = '/static/bg/cloud.png'; // Replace with the actual image URL
+        }
+        if (name && name.toLowerCase() === 'frank') {
+            title = "It Wasn’t Frank.";
+            subtitle = "Frank’s awareness of security best practices and his use of strong passwords and antivirus software helped him stay safe.";
+            image = '/static/bg/director.png'; // Replace with the actual image URL
+        }
+
+
+        // Create an instance of InfoCard with dynamic content and render it
+        const infoCard = new InfoCard(image, title, subtitle, crossGif);
+        infoCard.render();
+
+        // play wrong.mp3
+        var audio = new Audio('static/bg/wrong.mp3');
+        audio.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+    </script>
+</body>
+</html>
