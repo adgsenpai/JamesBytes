@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>James Bytes - Suspects</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- swal -->
+    <!-- SweetAlert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <style>
         body {
-            background-color: #1f2937;
-            /* Dark background for the page */
+            background-color: #1f2937; /* Dark background for the page */
         }
 
         .suspect-card {
@@ -24,15 +23,15 @@
     </style>
 </head>
 
-<body class="flex flex-col items-center justify-center h-screen">
+<body class="flex flex-col items-center justify-center min-h-screen">
 
     <!-- Logo -->
-    <img src="static/bg/logo.png" alt="James Bytes Logo" class="mb-8" style="width: 200px;">
+    <img src="static/bg/logo.png" alt="James Bytes Logo" class="mb-8">
 
     <h1 class="text-white text-3xl font-bold mb-4">The Suspects</h1>
 
     <!-- Suspects Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full px-4">
         <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
             <button onclick="investigate('Clark Cloud')" class="w-full">
                 <img src="static/bg/cloud.png" alt="Clark Cloud" class="w-32 h-32 mx-auto rounded-full mb-2">
@@ -72,49 +71,29 @@
 
     <!-- Action Buttons -->
     <div class="mt-8">
-        <button
-            class="bg-red-600 text-white font-bold py-2 px-4 rounded-full hover:bg-red-700 transition duration-300 mr-4">
-            Investigate
-        </button>
-        <button
-            class="bg-gray-600 text-white font-bold py-2 px-4 rounded-full hover:bg-gray-700 transition duration-300">
+        <button class="bg-gray-600 text-white font-bold py-2 px-4 rounded-full hover:bg-gray-700 transition duration-300" onclick="doneInvestigating()">
             Done Investigating
         </button>
     </div>
 
     <script>
-
-        // play audio 2.mp3
+        // Play audio
         var audio = new Audio('static/2.mp3');
         audio.play().catch(error => {
             console.error("Audio playback failed:", error);
         });
 
-        const notImplemented = () => {
-            swal("Not Implemented", "This feature is not implemented yet.", "warning");
+        const doneInvestigating = () => {
+            swal("Done!", "You have completed your investigations.", "success");
+            // Logic for when investigations are done
+        }
+
+        const goIntoInvestigation = (suspect) => {
+            window.location.href = 'suspectprofile.html?name=' + suspect;
         }
 
         function investigate(suspect) {
-            // case suspewct names
-            switch (suspect) {
-                case 'Clark Cloud':
-                    notImplemented();
-                    break;
-                case 'Fiona Firewall':
-                    window.location.href = "fiona.html";
-                    break;
-                case 'Eva Encryption':
-                    notImplemented();
-                    break;
-                case 'Steve Sweep':
-                    window.location.href = "steve.html";
-                    break;
-                case 'Frank Phisher':
-                    notImplemented();
-                    break;
-                default:
-                    console.error("Invalid suspect name:", suspect);
-            }
+            goIntoInvestigation(suspect.split(' ')[0]); // Use the first name to pass to the next page
         }
     </script>
 

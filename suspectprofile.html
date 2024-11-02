@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suspect Profile</title>
+
+    <!-- Tailwind CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Blinking caret effect */
+        .blink-caret::after {
+            content: '|';
+            animation: blink 0.7s steps(1) infinite;
+            color: white;
+        }
+
+        @keyframes blink {
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            50.01%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Fade-In and Scale-Up Animation for "Mission Accepted" */
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-fade-in-scale {
+            animation: fadeInScale 1s ease-out forwards;
+        }
+
+        /* Optional Fade-Out Animation */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .animate-fade-out {
+            animation: fadeOut 1s ease-in forwards;
+        }
+
+        .suspect-image {
+            max-width: 150px; /* Maximum width */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 50%;
+            margin-right: 20px;
+            flex-shrink: 0; /* Prevent the image from shrinking */
+        }
+
+        .profile-content {
+            max-width: 800px; /* Adjusted maximum width for the profile content */
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn-notes {
+            background-color: #888;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-right: 10px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .btn-next {
+            background-color: #f00;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 flex items-center justify-center min-h-screen text-white font-mono">
+    <div class="text-center p-6 max-w-2xl" x-data="missionFlow()" x-init="init()">
+        <img src="static/bg/logo.png" alt="James Bytes Logo" class="logo-text">
+        <div class="profile-content">
+            <img id="suspectImage" class="suspect-image" src="" alt="Suspect Image" />
+            <div class="text-left">
+                <h2 id="suspectName" class="text-xl font-bold"></h2>
+                <h3 id="suspectTitle" class="text-lg"></h3>
+                <p id="suspectDescription"></p>
+                <br>
+                <button class="btn-notes" onclick="showCaseNotes()">Clark's Case Notes</button>
+                <br>
+                <br>
+                <button class="btn-next" onclick="backSuspects()">Go back to Suspects</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define the Suspect class
+        class Suspect {
+            constructor(name, title, description, image, notesImage) {
+                this.name = name;
+                this.title = title;
+                this.description = description;
+                this.image = image;
+                this.notesImage = notesImage;
+            }
+
+            // Render the suspect's details on the page
+            render() {
+                document.getElementById("suspectName").innerText = this.name;
+                document.getElementById("suspectTitle").innerText = this.title;
+                document.getElementById("suspectDescription").innerText = this.description;
+                document.getElementById("suspectImage").src = this.image;
+            }
+
+            // Show case notes in a SweetAlert modal
+            showCaseNotes() {
+                Swal.fire({
+                    title: `${this.name}'s Case Notes`,
+                    imageUrl: this.notesImage,
+                    imageAlt: `${this.name}'s case notes`,
+                    showCloseButton: true,
+                    confirmButtonText: 'Close'
+                });
+            }
+        }
+
+        // Sample suspects data
+        const suspects = {
+            clark: new Suspect(
+                "Clark Cloud",
+                "The Office Manager",
+                "Clark is the office manager and oversees all operations. His knowledge of the company’s systems and procedures makes him a valuable asset. However, his busy schedule and the pressure of his role could make him vulnerable to mistakes and oversights.",
+                "static/bg/clarkcloud.png", // Ensure the path is correct
+                "static/bg/notebookClark.png" // Ensure the path is correct
+            ),
+            // Additional suspects can be added here
+        };
+
+        // Function to get query parameters from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Render the suspect based on URL parameter
+        function renderSuspect() {
+            const suspectName = getQueryParam("name")?.toLowerCase();
+            if (suspectName && suspects[suspectName]) {
+                const suspect = suspects[suspectName];
+                suspect.render();
+                window.showCaseNotes = () => suspect.showCaseNotes(); // Attach to global scope for button access
+            } else {
+                document.body.innerHTML = "<div class='text-center text-white'>Suspect not found.</div>";
+            }
+        }
+
+        // Load the suspect details when the page loads
+        window.onload = renderSuspect;
+
+        // Function to handle the "Next Suspect" button
+        function backSuspects() {
+            window.location.href = "suspects.html";
+        }
+
+    </script>
+</body>
+
+</html>
