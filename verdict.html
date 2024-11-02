@@ -66,7 +66,7 @@
 </head>
 <body class="flex flex-col items-center justify-start min-h-screen">
     <!-- Logo and Paragraph -->
-    <img src="/static/bg/logo.png" alt="James Bytes" class="mt-4">
+    <img src="static/bg/logo.png" alt="James Bytes" class="mt-4">
     <p class="mt-2 text-white text-center">Who do you think is responsible for the cybercrime? Click the circles to pick your suspect.</p>
 
     <!-- view clues button -->
@@ -74,7 +74,7 @@
     
     <!-- Main Image Container -->
     <div class="relative w-full max-w-7xl mt-6">
-        <img src="/static/bg/verdictImage.png" alt="Character Lineup" class="w-full">
+        <img src="static/bg/verdictImage.png" alt="Character Lineup" class="w-full">
           <!-- Character Zones with Hover Effects -->
           <div class="absolute inset-0">
             <div class="hover-effect" style="top: 20%; left: 10%; width: 10%; height: 20%;" onclick="navigateToPage('not.html?name=clark')">
@@ -108,7 +108,7 @@
 
     <script>
         // play audio
-        var audio = new Audio('/static/bg/verdict.mp3');
+        var audio = new Audio('static/bg/verdict.mp3');
         // loop
         audio.loop = true;
         audio.play().catch(error => {
