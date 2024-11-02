@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Breach Mission - Step 1</title>
+    <!-- Load Alpine.js with defer to ensure it loads after HTML -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
+    <!-- Tailwind CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Blinking caret effect */
+        .blink-caret::after {
+            content: '|';
+            animation: blink 0.7s steps(1) infinite;
+            color: white;
+        }
+
+        @keyframes blink {
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            50.01%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Fade-In and Scale-Up Animation for "Mission Accepted" */
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-fade-in-scale {
+            animation: fadeInScale 1s ease-out forwards;
+        }
+
+        /* Optional Fade-Out Animation */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .animate-fade-out {
+            animation: fadeOut 1s ease-in forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 flex items-center justify-center min-h-screen text-white font-mono">
+    <div class="text-center p-6 max-w-md" x-data="missionFlow()" x-init="init()">
+        <!-- Mission Accepted Screen -->
+        <template x-if="stage === 'accepted'">
+            <div class="text-center animate-fade-in-scale">
+                <h1 class="text-5xl font-extrabold mb-4">Step 2</h1>                
+            </div>
+        </template>
+
+        <!-- Typewriter Step 1 -->
+        <template x-if="stage === 'step1'">
+            <div>
+                <!-- Text Container with Blinking Caret -->
+                <div class="text-left blink-caret text-xl" x-html="typedText"></div>
+
+                <!-- Investigate Mission Button, initially hidden via x-show -->
+                <button class="mt-8 bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600 transition transform hover:scale-105"
+                    @click="investigate()" x-show="typingComplete" x-transition>
+                    Investigate
+                </button>
+            </div>
+        </template>
+    </div>
+
+    <script>
+        function missionFlow() {
+            return {
+                stage: 'accepted', // initial stage
+                typedText: '',
+                fullText:'Take a Good Look at the Clues',
+                index: 0,
+                typingSpeed: 100, // Milliseconds per character
+                typingSound: null,
+                typingComplete: false,
+
+                init() {
+                    // Display "Mission Accepted" for 3 seconds, then proceed to step1
+                    setTimeout(() => {
+                        // Optional: Add fade-out animation before switching stages
+                        const missionAcceptedElement = document.querySelector('.animate-fade-in-scale');
+                        if (missionAcceptedElement) {
+                            missionAcceptedElement.classList.add('animate-fade-out');
+                        }
+
+                        // Proceed to step1 after fade-out animation completes (1 second)
+                        setTimeout(() => {
+                            this.stage = 'step1';
+                            this.startTypewriter();
+                        }, 500); // 1 second for fade-out
+                    }, 1500); // 3 seconds display
+                },
+
+                startTypewriter() {
+                    // Initialize the typing sound
+                    this.typingSound = new Audio('static/type-writing-6834.mp3');
+                    this.typingSound.loop = true; // Loop the sound during typing
+                    this.typingSound.volume = 0.5; // Adjust volume as needed
+
+                    // Start the typewriter effect
+                    this.typeText();
+                },
+
+                typeText() {
+                    if (this.index < this.fullText.length) {
+                        const char = this.fullText[this.index];
+                        if (char !== '\n') {
+                            this.typedText += char;
+                        } else {
+                            // Replace newline characters with <br> for HTML rendering
+                            this.typedText += '<br>';
+                        }
+                        this.index++;
+                        setTimeout(() => this.typeText(), this.typingSpeed);
+                    } else {
+                        // Typing complete
+                        this.typingComplete = true;
+
+                        // Stop and reset the typing sound
+                        this.stopTypingSound();
+
+                        // Remove the caret after typing is complete
+                        const textContainer = document.querySelector('.blink-caret');
+                        if (textContainer) {
+                            textContainer.classList.remove('blink-caret');
+                        }
+                    }
+                },
+
+                stopTypingSound() {
+                    if (this.typingSound) {
+                        this.typingSound.pause();
+                        this.typingSound.currentTime = 0;
+                    }
+                },
+
+                investigate() {                    
+                    window.location.href = 'clues.html';
+                }
+            };
+        }
+    </script>
+</body>
+
+</html>

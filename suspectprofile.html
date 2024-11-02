@@ -153,10 +153,37 @@
                 "Clark Cloud",
                 "The Office Manager",
                 "Clark is the office manager and oversees all operations. His knowledge of the company’s systems and procedures makes him a valuable asset. However, his busy schedule and the pressure of his role could make him vulnerable to mistakes and oversights.",
-                "static/bg/clarkcloud.png", // Ensure the path is correct
-                "static/bg/notebookClark.png" // Ensure the path is correct
+                "static/bg/clarkcloud.png", 
+                "static/bg/notebookClark.png"
             ),
-            // Additional suspects can be added here
+            fiona: new Suspect(
+                "Fiona Firewall",
+                "The Receptionist",
+                "As the receptionist, Fiona is the first line of defense against unauthorized access. Her vigilance and attention to detail make her a trusted team member. However, her lack of technical expertise could make her vulnerable to social engineering attacks.",
+                "static/bg/fionaavatar.png",
+                "static/bg/notebookFiona.png"
+            ),
+            eva: new Suspect(
+                "Eva Encryption",
+                "The Sales Representative",
+                "Eva is a high-achieving sales representative who is always on the go. Her dedication to her clients often leads her to work long hours and use personal devices for work purposes. This could make her more susceptible to security risks.",
+                "static/bg/eva.png",
+                "static/bg/notebookEva.png"
+            ),
+            steve: new Suspect(
+                "Steve Sweep",
+                "The Maintenance Manager",
+                "The office's maintenance manager, Steve, is always on the move with his team, ensuring everything is sparkling clean. His access to almost all office areas makes him a familiar face, but his lack of tech-savvy could be a liability.",
+                "static/bg/steve.png",
+                "static/bg/notebookSteve.png"
+            ),
+            frank: new Suspect(
+                "Frank Phisher",
+                "The Marketing Director",
+                "As the marketing director, Frank is responsible for promoting the company’s brand and reaching new customers. His creativity and strategic thinking make him a valuable team member. However, his frequent use of technology and online tools could make him a cyberattack target.",
+                "static/bg/frank.png",
+                "static/bg/notebookFrank.png"
+            ),            
         };
 
         // Function to get query parameters from the URL
@@ -184,6 +211,13 @@
         function backSuspects() {
             window.location.href = "suspects.html";
         }
+
+        // Play audio
+        var audio = new Audio('static/2.mp3');
+        audio.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+        
 
     </script>
 </body>

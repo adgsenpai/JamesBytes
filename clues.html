@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James Bytes</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- Animate.css for Animations -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        /* Custom Magnifying Glass Cursor */
+        #interactiveImage {
+            cursor: url('https://cdn-icons-png.flaticon.com/512/622/622669.png') 16 16, zoom-in;
+        }
+
+        .clickable-area {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px dashed red;
+            /* Visual indication for clickable area */
+            transition: background 0.3s;
+        }
+
+        .clickable-area:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Button Styling */
+        .continue-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+
+        .continue-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background-color: #45a049;
+        }
+
+        .continue-button:active {
+            transform: scale(1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Bounce Animation */
+        @keyframes bounce {
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-8px);
+            }
+
+            60% {
+                transform: translateY(-4px);
+            }
+        }
+
+        /* Responsive Image Size */
+        .image-container {
+            width: 90%;
+            max-width: 28rem;
+        }
+
+        @media (min-width: 640px) {
+            .image-container {
+                max-width: 32rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .image-container {
+                max-width: 36rem;
+            }
+        }
+
+        /* Tooltip Styling */
+        .tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 1000;
+            transform: translate(-50%, -100%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* Loading Screen Styling */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1F2937; /* Tailwind's bg-gray-800 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        /* Spinner Styling */
+        .spinner {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid #ffffff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-800 px-4">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Logo -->
+    <img src="/static/bg/logo.png" alt="James Bytes Logo" class="mb-6 w-32 h-auto">
+
+    <!-- Title -->
+    <h1 class="text-white text-3xl font-bold mb-4">Interactive Clues</h1>
+    <p class="text-gray-400 text-center mb-6">Click on the interactive image to explore the clues. Once you're done, click
+        Continue.</p>
+
+    <!-- Image Container -->
+    <div class="relative image-container" id="imageContainer">
+        <img id="interactiveImage" class="w-full h-auto rounded-lg shadow-lg" src="/static/bg/CluesBackground_enhanced.png"
+            alt="Interactive Clues Background">
+
+        <!-- Clickable Areas will be injected here by JavaScript -->
+    </div>
+
+    <!-- Continue Button -->
+    <div class="mt-6 mb-4 w-full flex justify-center">
+        <button class="continue-button flex items-center" onclick="window.location.href = '/choice.html'">
+            <i class="fas fa-arrow-right"></i>
+            Continue
+        </button>
+    </div>
+
+    <!-- Tooltip Element -->
+    <div id="tooltip" class="tooltip">Zoom In</div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Font Awesome JS (Optional if using SVGs instead) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        /**
+         * Class representing a clickable area on the interactive image.
+         */
+        class ClickableArea {
+            /**
+             * Create a clickable area.
+             * @param {Object} options - Configuration options for the clickable area.
+             * @param {HTMLElement} container - The container element where the clickable area will be appended.
+             */
+            constructor(options, container) {
+                this.top = options.top; // Percentage from top
+                this.left = options.left; // Percentage from left
+                this.width = options.width; // Percentage width
+                this.height = options.height; // Percentage height
+                this.title = options.title; // Title for Swal
+                this.subtitle = options.subtitle; // Subtitle for Swal
+                this.imageUrl = options.imageUrl; // Image URL for Swal
+
+                this.container = container;
+                this.tooltip = document.getElementById('tooltip');
+
+                this.createElement();
+                this.addEventListeners();
+            }
+
+            /**
+             * Create the clickable area element.
+             */
+            createElement() {
+                this.element = document.createElement('div');
+                this.element.classList.add('clickable-area');
+                this.element.style.top = this.top;
+                this.element.style.left = this.left;
+                this.element.style.width = this.width;
+                this.element.style.height = this.height;
+
+                // Accessibility Enhancements
+                this.element.setAttribute('role', 'button');
+                this.element.setAttribute('aria-label', this.title);
+
+                this.container.appendChild(this.element);
+            }
+
+            /**
+             * Add event listeners for click and hover events.
+             */
+            addEventListeners() {
+                // Click Event
+                this.element.addEventListener('click', () => {
+                    this.showSwal();
+                });
+
+                // Keyboard Accessibility: Allow activation via Enter and Space keys
+                this.element.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.showSwal();
+                    }
+                });
+
+                // Mouse Enter Event
+                this.element.addEventListener('mouseenter', (e) => {
+                    this.showTooltip(e);
+                });
+
+                // Mouse Move Event
+                this.element.addEventListener('mousemove', (e) => {
+                    this.moveTooltip(e);
+                });
+
+                // Mouse Leave Event
+                this.element.addEventListener('mouseleave', () => {
+                    this.hideTooltip();
+                });
+            }
+
+            /**
+             * Display the SweetAlert dialog with title, subtitle, and image.
+             */
+            showSwal() {
+                Swal.fire({
+                    title: this.title,
+                    text: this.subtitle,
+                    imageUrl: this.imageUrl,
+                    imageWidth: 300,
+                    imageHeight: 'auto',
+                    imageAlt: 'Custom image',
+                    animation: true,
+                    showCloseButton: true,
+                    showConfirmButton: false,
+
+                    showClass: {
+                        popup: 'animate__animated animate__zoomIn'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__zoomOut'
+                    }
+                });
+            }
+
+            /**
+             * Show the tooltip near the cursor.
+             * @param {MouseEvent} e - The mouse event.
+             */
+            showTooltip(e) {
+                this.tooltip.classList.add('visible');
+                this.moveTooltip(e);
+            }
+
+            /**
+             * Move the tooltip based on the cursor's position.
+             * @param {MouseEvent} e - The mouse event.
+             */
+            moveTooltip(e) {
+                const tooltip = this.tooltip;
+                const tooltipWidth = tooltip.offsetWidth;
+                const tooltipHeight = tooltip.offsetHeight;
+                const offset = 10; // Offset from the cursor
+
+                let x = e.pageX + offset;
+                let y = e.pageY - tooltipHeight - offset;
+
+                // Prevent tooltip from going off the right edge
+                if (x + tooltipWidth > window.innerWidth) {
+                    x = window.innerWidth - tooltipWidth - offset;
+                }
+
+                // Prevent tooltip from going above the viewport
+                if (y < 0) {
+                    y = e.pageY + offset;
+                }
+
+                tooltip.style.left = `${x}px`;
+                tooltip.style.top = `${y}px`;
+            }
+
+            /**
+             * Hide the tooltip.
+             */
+            hideTooltip() {
+                this.tooltip.classList.remove('visible');
+            }
+        }
+
+        /**
+         * Initialize all clickable areas.
+         */
+        function initializeClickableAreas() {
+            const container = document.getElementById('imageContainer');
+
+            // Define your clickable areas here
+            const areas = [
+                {
+                    top: '35%',
+                    left: '8%',
+                    width: '12%',
+                    height: '18%',
+                    title: 'USB',
+                    subtitle: 'A USB drive is missing — never a good thing!',
+                    imageUrl: '/static/bg/usb.png' // Replace with your image path
+                },
+                {
+                    top: '2.5%',
+                    left: '53.5%',
+                    width: '15%',
+                    height: '20%',
+                    title: 'Password',
+                    subtitle: 'Is that a password written on a piece of paper?',
+                    imageUrl: '/static/bg/password.png' // Replace with your image path
+                },
+                {
+                    top: '2.5%',
+                    left: '25%',
+                    width: '20%',
+                    height: '22%',
+                    title: 'Trash Can',
+                    subtitle: 'A good investigator never overlooks the trash can.',
+                    imageUrl: '/static/bg/bin.png' // Replace with your image path
+                },
+                {
+                    top: '62.5%',
+                    left: '42.5%',
+                    width: '20%',
+                    height: '22%',
+                    title: 'Purse',
+                    subtitle: 'Hmmm...That purse looks familiar.',
+                    imageUrl: '/static/bg/purse.png' // Replace with your image path
+                }
+            ];
+
+            // Create ClickableArea instances
+            areas.forEach(area => {
+                new ClickableArea(area, container);
+            });
+        }
+
+        /**
+         * Function to handle the Continue button click.
+         */
+        function openSwal() {
+            Swal.fire({
+                title: 'Magnifying Glass',
+                text: 'Continue exploring the interactive image.',
+                imageUrl: '/static/bg/continue-image.jpg', // Replace with your image path
+                imageWidth: 300,
+                imageHeight: 'auto',
+                imageAlt: 'Continue Image',
+                animation: true,
+                showCloseButton: true,
+                showConfirmButton: false,
+
+                showClass: {
+                    popup: 'animate__animated animate__zoomIn'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__zoomOut'
+                }
+            });
+        }
+
+        /**
+         * Function to hide the loading screen once all assets are loaded.
+         */
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.transition = 'opacity 0.5s ease';
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+
+        // Play audio on loop
+        var audio = new Audio('static/1.mp3');
+        audio.loop = true;
+        audio.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+
+        // Initialize clickable areas and hide loading screen when everything is loaded
+        window.addEventListener('load', () => {
+            initializeClickableAreas();
+            hideLoadingScreen();
+        });
+    </script>
+</body>
+
+</html>
