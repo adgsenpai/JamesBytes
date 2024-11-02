@@ -7,16 +7,59 @@
     <title>James Bytes</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            background-image: url('static/bg/bgmain.png'); /* Update with the correct image path */
+            background-image: url('static/bg/cyberbackground.webp');
             background-size: cover;
             background-position: center;
-            cursor: pointer; /* Change cursor to indicate clickable area */
+            cursor: pointer;
+        }
+
+        .logo-text {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .agent-text {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .agent-text .title {
+            font-size: 24px;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .agent-text .agent-code {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .agent-text .subtext {
+            font-size: 18px;
+            color: red;
+            margin-top: 10px;
+            font-weight: 400;
         }
 
         .start-button {
             position: absolute;
-            top: 50%;
+            top: 65%;
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: #f44336;
@@ -44,31 +87,58 @@
     </style>
 </head>
 
-<body class="flex items-center justify-center h-screen bg-gray-800 relative" >
+<body class="flex items-center justify-center h-screen bg-gray-800 relative">
 
+    <!-- James Bytes Logo -->
+    <img src="static/bg/logo.png" alt="James Bytes Logo" class="logo-text">
+
+
+    <!-- Cyber-Secret Agent Text -->
+    <div class="agent-text">
+        <div class="title"
+        style="font-weight: 1000; font-style: italic; font-size: 25px; "
+        >Cyber-Secret</div>
+        <div class="agent-code"
+        style="font-weight: 1000; font-style: italic; font-size: 50px; "
+        >AGENT
+        </div>
+        <div
+        style="font-weight: 1000; font-style: italic;"
+        >0101011</div>
+    </div>
+
+    <!-- Start Button -->
     <div class="start-button" onclick="startGame(event)">
         Start Game
     </div>
 
     <script>
-        var audio = new Audio('static/1.mp3');
-
-        playAudio();
-        // Function to play audio when the page is clicked
-        function playAudio() {
-            audio.play().catch(error => {
-                console.error("Audio playback failed:", error);
-            });
-        }
-
         // Function to handle game start
         function startGame(event) {
-            event.stopPropagation(); // Prevent triggering playAudio when clicking the button
-            playAudio(); // Play audio            
-            window.location.href = "game.html"; // Redirect to the game page after audio starts            
+            window.location.href = "start.html"; // Redirect to the start page
         }
     </script>
 
 </body>
 
+<script>
+    var audio = new Audio('static/StartingMusic.mp3');
+
+    playAudio();
+    // Function to play audio when the page is clicked
+    function playAudio() {
+        audio.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+    }
+
+    // Function to handle game start
+    function startGame(event) {
+        event.stopPropagation(); // Prevent triggering playAudio when clicking the button
+        playAudio(); // Play audio            
+        window.location.href = "missionbrief.html"; // Redirect to the game page after audio starts            
+    }
+</script>
+
 </html>
+

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Breach Mission</title>
+    <!-- Load Alpine.js with defer to ensure it loads after HTML -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
+    <!-- Tailwind CSS for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Blinking caret effect */
+        .blink-caret::after {
+            content: '|';
+            animation: blink 0.7s steps(1) infinite;
+            color: white;
+        }
+
+        @keyframes blink {
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            50.01%,
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 flex items-center justify-center min-h-screen text-white font-mono">
+    <div class="text-center p-6 max-w-md" x-data="typewriterEffect()" x-init="init()">
+        <!-- Text Container with Blinking Caret -->
+        <div class="text-left blink-caret" x-html="missionText"></div>
+
+        <!-- Accept Mission Button, initially hidden via x-show -->
+        <button class="mt-8 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+            @click="acceptMission()" x-show="typingComplete" x-transition>
+            Accept Mission
+        </button>
+    </div>
+
+    <script>
+        function typewriterEffect() {
+            return {
+                missionText: '',
+                fullText: `A well-known company has fallen victim to a major data breach.\n
+Agent James Bytes is investigating but needs your help to crack the case.\n
+Check each suspect's case notes, comb through the clues and help him uncover the culprit!\n
+Remember: The truth is often hidden in plain sight, obscured by the shadows of assumption and the silhouettes of suspicion.`,
+                index: 0,
+                typingSpeed: 50, // Milliseconds per character
+                typingSound: null,
+                typingSoundTimeout: null, // To store the timeout reference
+                typingComplete: false,
+
+                init() {
+                    // Initialize the typing sound
+                    this.typingSound = new Audio('static/type-writing-6834.mp3');
+                    this.typingSound.loop = false; // Loop the sound during typing
+                    this.typingSound.volume = 1; // Adjust volume as needed
+
+                    // Play the typing sound
+                    this.typingSound.play().catch(error => {
+                        console.error('Typing sound playback failed:', error);
+                    });
+                    
+  
+                    // Start the typewriter effect
+                    this.typeText();
+                },
+
+                typeText() {
+                    if (this.index < this.fullText.length) {
+                        const char = this.fullText[this.index];
+                        if (char !== '\n') {
+                            this.missionText += char;
+                        } else {
+                            // Replace newline characters with <br> for HTML rendering
+                            this.missionText += '<br>';
+                        }
+                        this.index++;
+                        setTimeout(() => this.typeText(), this.typingSpeed);
+                    } else {
+                        // Typing complete
+                        this.typingComplete = true;
+
+                        // Stop and reset the typing sound
+                        this.stopTypingSound();
+
+                        // Remove the caret after typing is complete
+                        const textContainer = document.querySelector('.blink-caret');
+                        if (textContainer) {
+                            textContainer.classList.remove('blink-caret');
+                        }
+                    }
+                },
+
+                stopTypingSound() {
+                    if (this.typingSound) {
+                        this.typingSound.pause();
+                        this.typingSound.currentTime = 0;
+                    }
+                    if (this.typingSoundTimeout) {
+                        clearTimeout(this.typingSoundTimeout);
+                        this.typingSoundTimeout = null;
+                    }
+                },
+
+                acceptMission() {
+                    alert('Mission Accepted!');
+                    // Additional functionality can be added here, such as navigating to another page
+                }
+            };
+        }
+
+        // Play background MissionBrief.wav once the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            var backgroundAudio = new Audio('static/MissionBrief.wav');
+            backgroundAudio.loop = true; // Loop background audio
+            backgroundAudio.volume = 0.3; // Adjust volume as needed
+            backgroundAudio.play().catch(error => {
+                console.error("Background audio playback failed:", error);
+            });
+        });
+    </script>
+</body>
+
+</html>
