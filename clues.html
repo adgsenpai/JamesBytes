@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>James Bytes</title>
+    <title>James Bytes - Interactive Clues</title>
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <!-- Font Awesome for Icons -->
@@ -83,18 +83,19 @@
         /* Responsive Image Size */
         .image-container {
             width: 90%;
-            max-width: 28rem;
+            max-width: 32rem; /* Increased max-width */
+            position: relative;
         }
 
         @media (min-width: 640px) {
             .image-container {
-                max-width: 32rem;
+                max-width: 40rem; /* Further increased for larger screens */
             }
         }
 
         @media (min-width: 768px) {
             .image-container {
-                max-width: 36rem;
+                max-width: 48rem; /* Further increased for larger screens */
             }
         }
 
@@ -103,13 +104,13 @@
             position: absolute;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 4px 8px;
+            padding: 6px 12px; /* Increased padding */
             border-radius: 4px;
-            font-size: 12px;
+            font-size: 14px; /* Increased font size */
             pointer-events: none;
             white-space: nowrap;
             z-index: 1000;
-            transform: translate(-50%, -100%);
+            transform: translate(-50%, -120%);
             opacity: 0;
             transition: opacity 0.2s;
         }
@@ -151,6 +152,87 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Background Music Toggle Button */
+        .bg-music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            z-index: 40;
+            transition: background-color 0.3s;
+        }
+
+        .bg-music-toggle:hover {
+            background-color: #555;
+        }
+
+        /* SweetAlert2 Custom Styles */
+        .swal2-popup {
+            width: 600px !important; /* Increased width */
+            max-width: 90% !important; /* Responsive */
+        }
+
+        .swal2-image {
+            width: 400px !important; /* Increased image width */
+            height: auto !important;
+        }
+
+        /* Spin Animation for Swal Image */
+        .spin-animation {
+            animation: spinImage 2s linear;
+        }
+
+        @keyframes spinImage {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 600px) {
+            .image-container {
+                max-width: 90%; /* Adjusted max-width for mobile */
+            }
+
+            .profile-content img {
+                width: 150px; /* Adjusted for mobile */
+                height: 150px; /* Adjusted for mobile */
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 20px; /* Adjusted padding for mobile */
+            }
+
+            .continue-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .tooltip {
+                font-size: 12px; /* Adjusted font size */
+                padding: 4px 8px;
+            }
+
+            .swal2-image {
+                width: 300px !important; /* Adjusted for mobile */
+            }
+
+            .swal2-popup {
+                width: 90% !important; /* Adjusted for mobile */
+            }
+        }
     </style>
 </head>
 
@@ -164,13 +246,13 @@
     <img src="static/bg/logo.png" alt="James Bytes Logo" class="mb-6 w-32 h-auto">
 
     <!-- Title -->
-    <h1 class="text-white text-3xl font-bold mb-4">Interactive Clues</h1>
+    <h1 class="text-white text-4xl font-bold mb-4">Interactive Clues</h1>
     <p class="text-gray-400 text-center mb-6">Click on the interactive image to explore the clues. Once you're done, click
         Continue.</p>
 
     <!-- Image Container -->
     <div class="relative image-container" id="imageContainer">
-        <img id="interactiveImage" class="w-full h-auto rounded-lg shadow-lg" src="static/bg/CluesBackground_enhanced.png"
+        <img id="interactiveImage" class="w-full h-auto rounded-lg shadow-lg" src="static/bg/clues.png"
             alt="Interactive Clues Background">
 
         <!-- Clickable Areas will be injected here by JavaScript -->
@@ -185,13 +267,54 @@
     </div>
 
     <!-- Tooltip Element -->
-    <div id="tooltip" class="tooltip">Zoom In</div>
+    <div id="tooltip" class="tooltip">Clue</div>
+
+
+    <!-- Background Music Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <source src="static/1.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Font Awesome JS (Optional if using SVGs instead) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
     <script>
+        /**
+         * Array of Clues
+         */
+        const clues = [
+            {
+                clueNumber: 1,
+                title: 'USB',
+                subtitle: 'On the company notice board - you found a note that someone lost their USB drive.',
+                imageUrl: 'static/bg/Clue2.USBdrive.png'
+            },
+            {
+                clueNumber: 2,
+                title: 'Password',
+                subtitle: 'Someone wrote their password on a piece of paper and pasted the stickynote to their monitor.',
+                imageUrl: 'static/bg/Clue3.Password.png'
+            },
+            {
+                clueNumber: 3,
+                title: 'Trash Can',
+                subtitle: 'Found a working mobile phone charger in the office trash.',
+                imageUrl: 'static/bg/Clue4.Trash.png'
+            },
+            {
+                clueNumber: 4,
+                title: 'Purse',
+                subtitle: 'In the purse you discover some used tissues :( and some weird scribbling that looks like a code',
+                imageUrl: 'static/bg/Clue1.Purse.png'
+            }
+         
+        ];
+
+        let currentClueIndex = null; // Tracks the currently active clue
+
         /**
          * Class representing a clickable area on the interactive image.
          */
@@ -206,6 +329,7 @@
                 this.left = options.left; // Percentage from left
                 this.width = options.width; // Percentage width
                 this.height = options.height; // Percentage height
+                this.clueNumber = options.clueNumber; // Clue number
                 this.title = options.title; // Title for Swal
                 this.subtitle = options.subtitle; // Subtitle for Swal
                 this.imageUrl = options.imageUrl; // Image URL for Swal
@@ -230,7 +354,7 @@
 
                 // Accessibility Enhancements
                 this.element.setAttribute('role', 'button');
-                this.element.setAttribute('aria-label', this.title);
+                this.element.setAttribute('aria-label', `Clue ${this.clueNumber}: ${this.title}`);
 
                 this.container.appendChild(this.element);
             }
@@ -241,14 +365,14 @@
             addEventListeners() {
                 // Click Event
                 this.element.addEventListener('click', () => {
-                    this.showSwal();
+                    this.showClue();
                 });
 
                 // Keyboard Accessibility: Allow activation via Enter and Space keys
                 this.element.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        this.showSwal();
+                        this.showClue();
                     }
                 });
 
@@ -271,34 +395,22 @@
             /**
              * Display the SweetAlert dialog with title, subtitle, and image.
              */
-            showSwal() {
-                Swal.fire({
-                    title: this.title,
-                    text: this.subtitle,
-                    imageUrl: this.imageUrl,
-                    imageWidth: 300,
-                    imageHeight: 'auto',
-                    imageAlt: 'Custom image',
-                    animation: true,
-                    showCloseButton: true,
-                    showConfirmButton: false,
-
-                    showClass: {
-                        popup: 'animate__animated animate__zoomIn'
-                    },
-                    hideClass: {
-                        popup: 'animate__animated animate__zoomOut'
-                    }
-                });
+            showClue() {
+                // Determine the index of the clicked clue
+                const index = clues.findIndex(clue => clue.clueNumber === this.clueNumber);
+                if (index !== -1) {
+                    showClue(index);
+                }
             }
 
             /**
-             * Show the tooltip near the cursor.
+             * Show the tooltip near the cursor with specific clue name.
              * @param {MouseEvent} e - The mouse event.
              */
             showTooltip(e) {
                 this.tooltip.classList.add('visible');
                 this.moveTooltip(e);
+                this.tooltip.innerText = `Clue ${this.clueNumber}: ${this.title}`;
             }
 
             /**
@@ -337,78 +449,115 @@
         }
 
         /**
+         * Function to display a clue in a Swal dialog.
+         * @param {number} index - The index of the clue in the clues array.
+         */
+        function showClue(index) {
+            if (index < 0 || index >= clues.length) {
+                Swal.fire({
+                    title: 'No more clues!',
+                    text: 'You have explored all the clues.',
+                    icon: 'success',
+                    confirmButtonText: 'Close'
+                });
+                return;
+            }
+
+            currentClueIndex = index;
+            const clue = clues[index];
+
+            // Play spin-sound.mp3
+            const spinSound = new Audio('static/spin-sound.mp3');
+            spinSound.play().catch(error => {
+                console.error("Spin sound playback failed:", error);
+            });
+
+            Swal.fire({
+                title: `Clue ${clue.clueNumber}: ${clue.title}`,
+                html: `<p>${clue.subtitle}</p>`,
+                imageUrl: clue.imageUrl,
+                imageWidth: 400, // Increased image width
+                imageHeight: 'auto',
+                imageAlt: `${clue.title} Image`,
+                animation: true,
+                showCloseButton: true,
+                showConfirmButton: false,
+                showDenyButton: (index < clues.length - 1), // Show "Next Clue" if not last clue
+                denyButtonText: 'Next Clue',
+                customClass: {
+                    popup: 'rounded-lg' // Make dialog rounded
+                },
+                didOpen: () => {
+                    const img = Swal.getImage();
+                    if (img) {
+                        img.classList.add('spin-animation');
+                        // Remove spin-animation class after 2 seconds
+                        setTimeout(() => {
+                            img.classList.remove('spin-animation');
+                        }, 2000);
+                    }
+                }
+            }).then((result) => {
+                if (result.isDenied) {
+                    // Show next clue
+                    showClue(currentClueIndex + 1);
+                }
+            });
+        }
+
+        /**
          * Initialize all clickable areas.
          */
         function initializeClickableAreas() {
             const container = document.getElementById('imageContainer');
 
-            // Define your clickable areas here
-            const areas = [
+           // Define your clickable areas here
+           const areas = [
                 {
+                    clueNumber: 1,
                     top: '35%',
                     left: '8%',
                     width: '12%',
                     height: '18%',
                     title: 'USB',
-                    subtitle: 'A USB drive is missing — never a good thing!',
-                    imageUrl: 'static/bg/usb.png' // Replace with your image path
+                    subtitle: 'On the company notice board - you found a note that someone lost their USB drive.',
+                    imageUrl: 'static/bg/Clue2.USBdrive.png' // Replace with your image path
                 },
                 {
+                    clueNumber: 2,
                     top: '2.5%',
                     left: '53.5%',
                     width: '15%',
                     height: '20%',
                     title: 'Password',
-                    subtitle: 'Is that a password written on a piece of paper?',
-                    imageUrl: 'static/bg/password.png' // Replace with your image path
+                    subtitle: 'Someone wrote their password on a piece of paper and pasted the stickynote to their monitor.',
+                    imageUrl: 'static/bg/Clue3.Password.png' // Replace with your image path
                 },
                 {
+                    clueNumber: 3,
                     top: '2.5%',
                     left: '25%',
                     width: '20%',
                     height: '22%',
                     title: 'Trash Can',
-                    subtitle: 'A good investigator never overlooks the trash can.',
-                    imageUrl: 'static/bg/bin.png' // Replace with your image path
+                    subtitle: 'Found a working mobile phone charger in the office trash.',
+                    imageUrl: 'static/bg/Clue4.Trash.png' // Replace with your image path
                 },
                 {
+                    clueNumber: 4,
                     top: '62.5%',
                     left: '42.5%',
                     width: '20%',
                     height: '22%',
                     title: 'Purse',
-                    subtitle: 'Hmmm...That purse looks familiar.',
-                    imageUrl: 'static/bg/purse.png' // Replace with your image path
+                    subtitle: 'In the purse you discover some used tissues :( and some weird scribbling that looks like a code',
+                    imageUrl: 'static/bg/Clue1.Purse.png' // Replace with your image path
                 }
             ];
 
             // Create ClickableArea instances
             areas.forEach(area => {
                 new ClickableArea(area, container);
-            });
-        }
-
-        /**
-         * Function to handle the Continue button click.
-         */
-        function openSwal() {
-            Swal.fire({
-                title: 'Magnifying Glass',
-                text: 'Continue exploring the interactive image.',
-                imageUrl: 'static/bg/continue-image.jpg', // Replace with your image path
-                imageWidth: 300,
-                imageHeight: 'auto',
-                imageAlt: 'Continue Image',
-                animation: true,
-                showCloseButton: true,
-                showConfirmButton: false,
-
-                showClass: {
-                    popup: 'animate__animated animate__zoomIn'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__zoomOut'
-                }
             });
         }
 
@@ -424,18 +573,22 @@
             }, 500);
         }
 
-        // Play audio on loop
-        var audio = new Audio('static/1.mp3');
-        audio.loop = true;
-        audio.play().catch(error => {
-            console.error("Audio playback failed:", error);
-        });
+       
+        /**
+         * Function to initialize everything after user interaction to comply with autoplay policies.
+         */
 
-        // Initialize clickable areas and hide loading screen when everything is loaded
-        window.addEventListener('load', () => {
             initializeClickableAreas();
             hideLoadingScreen();
-        });
+ 
+        
+        
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            backgroundMusic.play().catch(error => {
+                console.error("Background music playback failed:", error);
+            });
+        
+
     </script>
 </body>
 

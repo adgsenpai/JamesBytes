@@ -3,18 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>James Bytes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- swal -->
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
         body {
-            background-image: url('static/bg/cyberbackground.webp');
+            background-image: url('static/bg/Picture1.png');
             background-size: cover;
             background-position: center;
+            font-family: 'Roboto', sans-serif;
             cursor: pointer;
         }
 
@@ -24,118 +28,138 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 32px;
-            font-weight: bold;
+            font-weight: 700;
             color: white;
             text-align: center;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Playfair Display', serif;
         }
 
-        .agent-text {
+        /* Typewriter Text Styles */
+        .typewriter-text {
             position: absolute;
             top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
             text-align: center;
             color: white;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .agent-text .title {
+            font-family: 'Source Code Pro', monospace;
             font-size: 24px;
-            font-style: italic;
-            font-weight: 400;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            overflow: hidden;
+            /* Ensures the text doesn't overflow */
+            border-right: .15em solid white;
+            /* Blinking cursor */
+            animation: blink-caret 0.75s step-end infinite;
         }
 
-        .agent-text .agent-code {
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: 2px;
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: white
+            }
         }
 
-        .agent-text .subtext {
-            font-size: 18px;
-            color: red;
-            margin-top: 10px;
-            font-weight: 400;
-        }
-
-        .start-button {
+        /* End Options Buttons Styles */
+        .end-options {
             position: absolute;
-            top: 65%;
+            top: 75%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #f44336;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 30px;
-            font-size: 24px;
-            font-weight: bold;
             text-align: center;
-            text-transform: uppercase;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
+            display: none;
+            /* Hidden by default */
         }
 
-        .start-button:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        .start-button:active {
-            transform: translate(-50%, -50%) scale(1);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        /* Media Query for Mobile Responsiveness */
+        @media (max-width: 600px) {
+            .typewriter-text {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 
-<body class="flex items-center justify-center h-screen bg-gray-800 relative">
+<body class="flex items-center justify-center h-screen relative">
 
     <!-- James Bytes Logo -->
     <img src="static/bg/logo.png" alt="James Bytes Logo" class="logo-text">
 
+    <!-- Typewriter Text Container -->
+    <div id="typewriter-text" class="typewriter-text"></div>
 
-    <!-- Cyber-Secret Agent Text -->
-    <div class="agent-text">
-        <div class="title"
-        style="font-weight: 1000; font-style: italic; font-size: 25px; "
-        >Cyber-Secret</div>
-        <div class="agent-code"
-        style="font-weight: 1000; font-style: italic; font-size: 50px; "
-        >AGENT
-        </div>
-        <div
-        style="font-weight: 1000; font-style: italic;"
-        >0101011</div>
-    </div>
-
-    <!-- Start Button -->
-    <div class="start-button" onclick="startJourney(event)">
-        End Game
+    <!-- End Options Tailwind Buttons -->
+    <div id="end-options" class="end-options">
+        <button
+            class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full mx-2 transition-transform duration-300 ease-in-out shadow-lg"
+            onclick="restartGame()">Restart</button>
+        <button
+            class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full mx-2 transition-transform duration-300 ease-in-out shadow-lg"
+            onclick="endGame()">End</button>
     </div>
 
     <script>
-        // Function to handle game start
-        function startJourney(event) {
-            //Swal ask if they want to play again
-            Swal.fire({
-                title: 'Do you want to play again?',
-                showDenyButton: true,
-                confirmButtonText: `Yes`,
-                denyButtonText: `No`,
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    window.location.href = "index.html";
-                } 
-            })
+        // Typewriter effect with audio synchronization
+        document.addEventListener('DOMContentLoaded', function () {
+            const text = "Thank You For Helping Solve This Cybercrime. Now, let’s work together to keep your office safe from cyberthreats and mishaps. Do your part by staying up-to-date with best practices. Remember, when it comes to cybercrime, everyone is at risk. Vigilance is key.  \n\n James Bytes brought to you by DFA Protect - Simply Effective";
+            let i = 0;
+            const speed = 50; // Typing speed in milliseconds
+
+
+
+            // Start background music
+            const bgAudio = new Audio('static/5.wav');
+            bgAudio.loop = true;
+            bgAudio.play().catch(error => {
+                console.error("Background audio playback failed:", error);
+            });
+
+
+            // Initialize typewriter audio
+            const typewriterAudio = new Audio('static/typewriter-1.mp3');
+            typewriterAudio.loop = false; // Play sound per character
+            typewriterAudio.volume = 1;
+            typewriterAudio.play().catch(error => {
+                console.error("Typewriter audio playback failed:", error);
+            });
+
+            function typeWriter() {
+                if (i < text.length) {
+                    document.getElementById("typewriter-text").innerHTML += text.charAt(i);
+                    // Play typewriter sound per character                   
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    // After typing is complete, stop typewriter audio and show the buttons
+                    showEndOptions();
+                    // Stop typewriter audio
+                    typewriterAudio.pause();
+                }
+            }
+            typeWriter();
+        });
+
+        // Function to show the end options
+        function showEndOptions() {
+            document.getElementById('end-options').style.display = 'block';
         }
 
-        // play 5.wav
-        var audio = new Audio('static/5.wav');
-        audio.play().catch(error => {
-            console.error("Audio playback failed:", error);
-        });
+        // Function to restart the game
+        function restartGame() {
+            window.location.href = "start.html";
+        }
+
+        // Function to end the game and redirect
+        function endGame() {
+            window.location.href = "https://www.dfaprotect.co.za/";
+        }
     </script>
 
 </body>

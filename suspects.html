@@ -6,95 +6,616 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>James Bytes - Suspects</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- SweetAlert -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Preload Audio Files -->
+    <link rel="preload" href="static/typewriter-1.mp3" as="audio">
+    <link rel="preload" href="static/fileflip.mp3" as="audio">
+    <link rel="preload" href="static/2.mp3" as="audio">
+    <link rel="preload" href="static/Secret Policeman Edited.mp3" as="audio">
+    <link rel="preload" href="static/Camera-1.mp3" as="audio">
+    <link rel="preload" href="static/2.mp3" as="audio"> <!-- Preload Background Music -->
     <style>
         body {
-            background-color: #1f2937; /* Dark background for the page */
+            background-color: #1E1E1E;
+            color: #7B7B7B;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            overflow: hidden;
         }
 
-        .suspect-card {
-            transition: transform 0.2s;
+        .view-button {
+            font-size: 1.5rem;
+            padding: 15px 30px;
+            background-color: #FF6F61;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        .suspect-card:hover {
-            transform: scale(1.05);
+        .view-button:hover {
+            background-color: #FF3B2D;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px; /* Increased gap for better spacing */
+            padding: 30px; /* Increased padding */
+        }
+
+        /* Profile Animation */
+        @keyframes fadeInScaleUp {
+            0% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .profile {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+            width: 200px; /* Increased width */
+            opacity: 0;
+            animation: fadeInScaleUp 1s ease forwards;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+
+        .profile:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .profile:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .profile:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .profile:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+
+        .profile:nth-child(5) {
+            animation-delay: 1s;
+        }
+
+        .profile:hover {
+            border-color: red;
+        }
+
+        .profile img {
+            width: 100%;
+            height: auto;
+        }
+
+        .profile-text {
+            padding: 15px; /* Increased padding */
+            font-size: 1.1rem; /* Increased font size */
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            animation: scaleDown 0.3s forwards;
+        }
+
+        @keyframes scaleDown {
+            0% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 10px;
+            width: 85%; /* Increased width */
+            max-width: 800px; /* Increased max-width */
+            max-height: 90vh;
+            /* Ensure modal doesn't exceed viewport height */
+            padding: 30px; /* Increased padding */
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeInScaleUp 0.5s ease forwards;
+            overflow-y: auto;
+            /* Add scroll if content exceeds modal height */
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px; /* Increased top position */
+            right: 20px; /* Increased right position */
+            font-size: 2.5rem; /* Increased font size */
+            color: #333;
+            cursor: pointer;
+        }
+
+        .profile-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-content img {
+            width: 180px; /* Increased width */            
+            object-fit: cover;
+            margin-bottom: 25px; /* Increased margin */
+            transition: transform 0.5s ease, opacity 0.5s ease; /* For slide-up animation */
+        }
+
+        .profile-content .text-left {
+            text-align: left;
+            width: 100%;
+        }
+
+        /* Ensure white spaces are preserved and text wraps properly */
+        #modalSuspectDescription {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 15px; /* Increased margin */
+            font-size: 1.1rem; /* Increased font size */
+        }
+
+        .btn-notes,
+        .btn-close {
+            padding: 12px 25px; /* Increased padding */
+            margin: 12px 5px 0 0; /* Increased margin */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem; /* Increased font size */
+        }
+
+        .btn-notes {
+            background-color: #FF6F61;
+            color: white;
+        }
+
+        .btn-notes:hover {
+            background-color: #FF3B2D;
+        }
+
+        .btn-close {
+            background-color: #808080;
+            color: white;
+        }
+
+        .btn-close:hover {
+            background-color: #FF6F61;
+        }
+
+        .done-button {
+            font-size: 1.3rem; /* Increased font size */
+            padding: 18px 35px; /* Increased padding */
+            background-color: #808080;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 25px; /* Increased margin */
+        }
+
+        .done-button:hover {
+            background-color: #FF6F61;
+        }
+
+        /* Next Suspect Button */
+        .next-button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+
+        .next-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Background Music Toggle Button */
+        .bg-music-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            z-index: 40;
+            transition: background-color 0.3s;
+        }
+
+        .bg-music-toggle:hover {
+            background-color: #555;
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 600px) {
+            .profile-container {
+                padding: 20px; /* Adjusted padding for mobile */
+                gap: 15px; /* Adjusted gap for mobile */
+            }
+
+            .profile {
+                width: 150px;
+            }
+
+            .profile-text {
+                padding: 10px; /* Adjusted padding */
+                font-size: 1rem; /* Adjusted font size */
+            }
+
+            .profile-content img {
+                width: 150px; /* Adjusted for mobile */
+                height: 150px; /* Adjusted for mobile */
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 20px; /* Adjusted padding for mobile */
+            }
+
+            .done-button {
+                font-size: 1rem;
+                padding: 10px 20px;
+                margin-top: 15px;
+            }
         }
     </style>
 </head>
 
-<body class="flex flex-col items-center justify-center min-h-screen">
-
+<body>
     <!-- Logo -->
     <img src="static/bg/logo.png" alt="James Bytes Logo" class="mb-8">
 
-    <h1 class="text-white text-3xl font-bold mb-4">The Suspects</h1>
+    <h1 class="text-white text-4xl font-bold mb-4">The Suspects</h1>
+    <h3 class="text-white text-xl font-semibold mb-6">Click on a suspect to view further case information:</h3>
 
     <!-- Suspects Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full px-4">
-        <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
-            <button onclick="investigate('Clark Cloud')" class="w-full">
-                <img src="static/bg/cloud.png" alt="Clark Cloud" class="w-32 h-32 mx-auto rounded-full mb-2">
-                <h2 class="text-white font-semibold">Clark Cloud</h2>
-                <p class="text-gray-400">The Office Manager</p>
-            </button>
-        </div>
-        <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
-            <button onclick="investigate('Fiona Firewall')" class="w-full">
-                <img src="static/bg/firewall.png" alt="Fiona Firewall" class="w-32 h-32 mx-auto rounded-full mb-2">
-                <h2 class="text-white font-semibold">Fiona Firewall</h2>
-                <p class="text-gray-400">The Receptionist</p>
-            </button>
-        </div>
-        <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
-            <button onclick="investigate('Eva Encryption')" class="w-full">
-                <img src="static/bg/encryption.png" alt="Eva Encryption" class="w-32 h-32 mx-auto rounded-full mb-2">
-                <h2 class="text-white font-semibold">Eva Encryption</h2>
-                <p class="text-gray-400">The Sales Representative</p>
-            </button>
-        </div>
-        <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
-            <button onclick="investigate('Steve Sweep')" class="w-full">
-                <img src="static/bg/sweep.png" alt="Steve Sweep" class="w-32 h-32 mx-auto rounded-full mb-2">
-                <h2 class="text-white font-semibold">Steve Sweep</h2>
-                <p class="text-gray-400">The Maintenance Manager</p>
-            </button>
-        </div>
-        <div class="suspect-card bg-gray-800 p-4 rounded-lg shadow-lg text-center">
-            <button onclick="investigate('Frank Phisher')" class="w-full">
-                <img src="static/bg/director.png" alt="Frank Phisher" class="w-32 h-32 mx-auto rounded-full mb-2">
-                <h2 class="text-white font-semibold">Frank Phisher</h2>
-                <p class="text-gray-400">The Marketing Director</p>
-            </button>
+    <div class="profile-container" id="profileContainer">
+        <!-- Suspect Cards will be dynamically loaded -->
+    </div>
+
+    <button class="done-button" onclick="doneInvestigating()">Done Investigating</button>
+
+    <!-- Modal Structure -->
+    <div id="suspectModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalSuspectName">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="profile-content">
+                <img id="modalSuspectImage" class="suspect-image" src="" alt="Suspect Image" />
+                <div class="text-left">
+                    <h2 id="modalSuspectName" class="text-2xl font-bold"></h2>
+                    <h3 id="modalSuspectTitle" class="text-xl"></h3>
+                    <p id="modalSuspectDescription"></p>
+                    <br>
+                    <button id="modalBtnNotes" class="btn-notes">Case Notes</button>
+                    <button class="btn-close" onclick="closeModal()">Close</button>
+                    <button id="nextSuspectBtn" class="next-button" style="display: none;">Next Suspect</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="mt-8">
-        <button class="bg-gray-600 text-white font-bold py-2 px-4 rounded-full hover:bg-gray-700 transition duration-300" onclick="doneInvestigating()">
-            Done Investigating
-        </button>
-    </div>
+    
+    <!-- Background Music Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <source src="static/2.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
-        // Play audio
-        var audio = new Audio('static/2.mp3');
-        audio.play().catch(error => {
-            console.error("Audio playback failed:", error);
+        // Audio Elements
+        const cameraSound = new Audio('static/Camera-1.mp3');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const bgMusicToggle = document.getElementById('bgMusicToggle');
+
+        // play background music on loop
+        backgroundMusic.play().catch(error => {
+            console.error("Background music playback failed:", error);
         });
 
-        const doneInvestigating = () => {
-            // redirect 
-            window.location.href = 'step2.html';
+        // Define the Suspect class
+        class Suspect {
+            constructor(name, title, description, image, notesImage) {
+                this.name = name;
+                this.title = title;
+                this.description = description;
+                this.image = image;
+                this.notesImage = notesImage;
+                this.typingTimeout = null; // Initialize typingTimeout
+                this.originalAudio = new Audio('static/typewriter-1.mp3'); // Typewriter sound effect
+                this.originalAudio.loop = false;
+            }
+
+            renderInModal() {
+                document.getElementById("modalSuspectName").innerText = this.name;
+                document.getElementById("modalSuspectTitle").innerText = this.title;
+                document.getElementById("modalSuspectDescription").innerText = ""; // Clear previous text
+                document.getElementById("modalSuspectImage").src = this.image;
+                this.clearTyping();
+                this.typeWriterEffect(this.description, "modalSuspectDescription", 100);
+            }
+
+            clearTyping() {
+                if (this.typingTimeout) {
+                    clearTimeout(this.typingTimeout);
+                    this.typingTimeout = null;
+                }
+                if (this.originalAudio) {
+                    this.originalAudio.pause();
+                    this.originalAudio.currentTime = 0;
+                }
+            }
+
+            typeWriterEffect(text, elementId, speed) {
+                const element = document.getElementById(elementId);
+                let index = 0;
+
+                const type = () => {
+                    if (index < text.length) {
+                        element.innerText += text.charAt(index);
+                        index++;
+
+                        // Play sound for non-space characters to avoid unnecessary noise
+                        if (text.charAt(index - 1) !== ' ') {
+                            this.originalAudio.currentTime = 0;
+                            this.originalAudio.play().catch(error => {
+                                console.error("Typewriter sound playback failed:", error);
+                            });
+                        }
+
+                        this.typingTimeout = setTimeout(type, speed);
+                    }
+                    // if at end stop audio
+                    else {
+                        this.originalAudio.pause();
+                    }
+                };
+
+                type();
+            }
+
+            showCaseNotes() {
+                var audio = new Audio('static/fileflip.mp3'); // Changed to fileflip sound
+                audio.play().catch(error => {
+                    console.error("Fileflip sound playback failed:", error);
+                });
+                Swal.fire({
+                    title: `${this.name}'s Case Notes`,
+                    imageUrl: this.notesImage,
+                    imageAlt: `${this.name}'s case notes`,
+                    showCloseButton: true,
+                    confirmButtonText: 'Close',
+                    background: '#333',
+                    color: '#fff',
+                    confirmButtonColor: '#3085d6'
+                });
+            }
         }
 
-        const goIntoInvestigation = (suspect) => {
-            window.location.href = 'suspectprofile.html?name=' + suspect;
+        // Suspects data
+        const suspects = {
+            clark: new Suspect(
+                "Clark Cloud",
+                "The Office Manager",
+                "Clark is the office manager and oversees all operations. His knowledge of the company’s systems and procedures makes him a valuable asset. However, his busy schedule and the pressure of his role could make him vulnerable to mistakes and oversights.",
+                "static/bg/clarkcloud.png",
+                "static/bg/notebookClark.png"
+            ),
+            fiona: new Suspect(
+                "Fiona Firewall",
+                "The Receptionist",
+                "As the receptionist, Fiona is the first line of defense against unauthorized access. Her vigilance and attention to detail make her a trusted team member. However, her lack of technical expertise could make her vulnerable to social engineering attacks.",
+                "static/bg/fionaavatar.png",
+                "static/bg/notebookFiona.png"
+            ),
+            eva: new Suspect(
+                "Eva Encryption",
+                "The Sales Representative",
+                "Eva is a high-achieving sales representative who is always on the go. Her dedication to her clients often leads her to work long hours and use personal devices for work purposes. This could make her more susceptible to security risks.",
+                "static/bg/eva.png",
+                "static/bg/notebookEva.png"
+            ),
+            steve: new Suspect(
+                "Steve Sweep",
+                "The Maintenance Manager",
+                "The office's maintenance manager, Steve, is always on the move with his team, ensuring everything is sparkling clean. His access to almost all office areas makes him a familiar face, but his lack of tech-savvy could be a liability.",
+                "static/bg/steve.png",
+                "static/bg/notebookSteve.png"
+            ),
+            frank: new Suspect(
+                "Frank Phisher",
+                "The Marketing Director",
+                "As the marketing director, Frank is responsible for promoting the company’s brand and reaching new customers. His creativity and strategic thinking make him a valuable team member. However, his frequent use of technology and online tools could make him a cyberattack target.",
+                "static/bg/frank.png",
+                "static/bg/notebookFrank.png"
+            ),
+        };
+
+        // Variables to keep track of suspects
+        let currentActiveSuspect = null;
+        let suspectKeys = Object.keys(suspects);
+        let currentIndex = -1; // Initialize to -1 since no suspect is active initially
+
+        // Function to load suspect tiles one by one with fade-in and camera sound
+        function loadSuspectTiles() {
+            const container = document.getElementById("profileContainer");
+            suspectKeys.forEach((key, index) => {
+                setTimeout(() => {
+                    const suspect = suspects[key];
+                    const profileDiv = document.createElement('div');
+                    profileDiv.classList.add('profile');
+                    profileDiv.onclick = () => openModal(key);
+
+                    const img = document.createElement('img');
+                    img.src = suspect.image;
+                    img.alt = `${suspect.name} Image`;
+                    img.classList.add('w-32', 'h-32', 'mx-auto', 'rounded-full', 'mb-2');
+
+                    const textDiv = document.createElement('div');
+                    textDiv.classList.add('profile-text');
+                    textDiv.innerHTML = `
+                        <h2>${suspect.name}</h2>
+                        <h3>Role: ${suspect.title}</h3>
+                    `;
+
+                    profileDiv.appendChild(img);
+                    profileDiv.appendChild(textDiv);
+                    container.appendChild(profileDiv);
+
+                    // Play camera sound
+                    cameraSound.currentTime = 0;
+                    cameraSound.play().catch(error => {
+                        console.error("Camera sound playback failed:", error);
+                    });
+                }, index * 1000); // 1 second delay between each tile
+            });
         }
 
-        function investigate(suspect) {
-            goIntoInvestigation(suspect.split(' ')[0]); // Use the first name to pass to the next page
+        // Open the modal with the selected suspect's details
+        function openModal(suspectKey) {
+            const index = suspectKeys.indexOf(suspectKey);
+            if (index === -1) return;
+
+            currentIndex = index;
+            currentActiveSuspect = suspects[suspectKey];
+            renderModal(currentIndex);
+
+            document.getElementById("suspectModal").style.display = "flex";
+
+
+
+            document.getElementById("modalBtnNotes").onclick = () => currentActiveSuspect.showCaseNotes();
+
+            // Setup Next Suspect Button
+            const nextBtn = document.getElementById("nextSuspectBtn");
+            if (currentIndex < suspectKeys.length - 1) {
+                nextBtn.style.display = "inline-block";
+                nextBtn.onclick = () => {
+                    navigateToNextSuspect();
+                };
+            } else {
+                nextBtn.style.display = "none";
+            }
         }
+
+        // Function to navigate to the next suspect
+        function navigateToNextSuspect() {
+            if (currentIndex >= suspectKeys.length - 1) return; // No more suspects
+
+            // Slide out current image
+            const image = document.getElementById("modalSuspectImage");
+            image.style.transform = "translateY(-100%)";
+            image.style.opacity = "0";
+            image.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+
+            // Pause typing effect
+            currentActiveSuspect.clearTyping();
+
+            setTimeout(() => {
+                currentIndex++;
+                const nextKey = suspectKeys[currentIndex];
+                currentActiveSuspect = suspects[nextKey];
+                renderModal(currentIndex);
+            }, 500); // Wait for slide up animation
+        }
+
+        // Function to render modal content based on suspect index
+        function renderModal(index) {
+            const key = suspectKeys[index];
+            const suspect = suspects[key];
+            if (suspect) {
+                suspect.renderInModal();
+                const image = document.getElementById("modalSuspectImage");
+                image.style.transform = "translateY(0)";
+                image.style.opacity = "1";
+                image.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+
+                // Update Next Suspect Button visibility
+                const nextBtn = document.getElementById("nextSuspectBtn");
+                if (index < suspectKeys.length - 1) {
+                    nextBtn.style.display = "inline-block";
+                } else {
+                    nextBtn.style.display = "none";
+                }
+            }
+        }
+
+        // Close the modal
+        function closeModal() {
+            const modal = document.getElementById("suspectModal");
+            modal.style.display = "none";
+
+            // Clear typing effect of the currently active suspect
+            if (currentActiveSuspect) {
+                currentActiveSuspect.clearTyping();
+                currentActiveSuspect = null;
+            }
+
+            document.getElementById("modalSuspectDescription").innerText = "";
+
+            // Reset image position
+            const image = document.getElementById("modalSuspectImage");
+            image.style.transform = "translateY(0)";
+            image.style.opacity = "1";
+            image.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+
+            // Hide Next Suspect Button
+            const nextBtn = document.getElementById("nextSuspectBtn");
+            nextBtn.style.display = "none";
+        }
+
+        // Function to handle "Done Investigating" button
+        function doneInvestigating() {
+           
+            setTimeout(() => {
+                window.location.href = 'step2.html';
+            }, 1000); // 1 second delay
+        }
+
+        // Initial setup: Load suspect tiles on page load
+        window.onload = () => {
+            loadSuspectTiles();
+        };
     </script>
 
 </body>

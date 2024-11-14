@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Character Lineup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
@@ -11,13 +12,10 @@
         }
         
         .hover-effect {
-            position: absolute; /* Changed from relative to absolute */
-            /* Removed overflow: hidden; */
+            position: absolute;
             display: inline-block;
             width: 10%;
             height: 20%;
-            /* Ensure the hover area is visible by adding a background or border for debugging */
-            /* background: rgba(255, 0, 0, 0.2); /* Uncomment for debugging */
             cursor: pointer;
         }
         
@@ -39,10 +37,10 @@
         
         .tooltip {
             position: absolute;
-            bottom: 100%; /* Position above the character area */
+            bottom: 100%;
             left: 50%;
-            transform: translate(-50%, -5px); /* Center and offset */
-            background-color: rgba(0, 0, 0, 0.85); /* Black background */
+            transform: translate(-50%, -5px);
+            background-color: rgba(0, 0, 0, 0.85);
             color: #fff;
             padding: 0.5rem;
             border-radius: 0.25rem;
@@ -50,9 +48,9 @@
             opacity: 0;
             transition: visibility 0s, opacity 0.3s ease;
             white-space: nowrap;
-            z-index: 10; /* Added z-index */
+            z-index: 10;
         }
-
+        
         .hover-effect:hover .tooltip {
             visibility: visible;
             opacity: 1;
@@ -62,6 +60,184 @@
             transition: opacity 0.5s ease-out;
             opacity: 0;
         }
+
+        /* Modal Styles */
+        #notModal {
+            display: none;
+        }
+
+        #notModal.active {
+            display: flex;
+        }
+
+        /* Custom Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 10px; /* Added padding for small screens */
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #262626;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: fadeIn 0.5s;
+            overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Profile Picture Animations */
+        .profile-picture-container {
+            position: relative;
+            width: 40%;
+        }
+
+        .profile-picture {
+            width: 100%;
+            opacity: 0;
+            transform: translateX(-100%) rotate(-30deg);
+            animation: slideIn 1s forwards;
+        }
+
+        /* Reject Cross Styling */
+        .reject-cross {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .line {
+            position: absolute;
+            width: 50px;
+            height: 100%;
+            background-color: red;
+            transform-origin: center;
+            opacity: 0;
+        }
+
+        /* Line Animations */
+        .line1 {
+            transform: rotate(45deg) scale(0);
+            animation: drawLine1 2s forwards ease-out 1.5s;
+        }
+
+        .line2 {
+            transform: rotate(-45deg) scale(0);
+            animation: drawLine2 1s forwards ease-out 3s;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0) rotate(-30deg);
+            }
+        }
+
+        @keyframes drawLine1 {
+            to {
+                opacity: 1;
+                transform: rotate(45deg) scale(1);
+            }
+        }
+
+        @keyframes drawLine2 {
+            to {
+                opacity: 1;
+                transform: rotate(-45deg) scale(1);
+            }
+        }
+
+        .text-content {
+            width: 50%;
+            text-align: center;
+            font-size: 1rem;
+            padding: 20px;
+        }
+
+        .close-button {
+            font-size: 1rem;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #7E3F40;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .close-button:hover {
+            background-color: #FF0004;
+        }
+
+        @media (max-width: 300px) {
+            .modal-content {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .profile-picture-container, .text-content {
+                width: 100%;
+            }
+
+            .text-content {
+                padding: 10px;
+            }
+
+            .close-button {
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 15px;
+            }
+
+            .profile-picture-container {
+                width: 100%;
+            }
+
+            .profile-picture {
+                width: 80%;
+                margin: 0 auto;
+            }
+
+            .text-content {
+                font-size: 0.9rem;
+            }
+
+            .close-button {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-start min-h-screen">
@@ -69,34 +245,64 @@
     <img src="static/bg/logo.png" alt="James Bytes" class="mt-4">
     <p class="mt-2 text-white text-center">Who do you think is responsible for the cybercrime? Click the circles to pick your suspect.</p>
 
-    <!-- view clues button -->
+    <!-- View Clues Button -->
     <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4" onclick="navigateToPage('clues.html')">View Clues</button>
     
     <!-- Main Image Container -->
     <div class="relative w-full max-w-7xl mt-6">
         <img src="static/bg/verdictImage.png" alt="Character Lineup" class="w-full">
-          <!-- Character Zones with Hover Effects -->
-          <div class="absolute inset-0">
-            <div class="hover-effect" style="top: 20%; left: 10%; width: 10%; height: 20%;" onclick="navigateToPage('not.html?name=clark')">
+        <!-- Character Zones with Hover Effects -->
+        <div class="absolute inset-0">
+            <!-- Clark Cloud -->
+            <div class="hover-effect" style="top: 20%; left: 10%; width: 10%; height: 20%;" onclick="openNotModal('clark')">
                 <span class="tooltip">Clark Cloud - The Office Manager</span>
             </div>
-            <div class="hover-effect" style="top: 20%; left: 26.75%; width: 10%; height: 20%;" onclick="navigateToPage('not.html?name=fiona')">
+            <!-- Fiona Firewall -->
+            <div class="hover-effect" style="top: 20%; left: 26.75%; width: 10%; height: 20%;" onclick="openNotModal('fiona')">
                 <span class="tooltip">Fiona Firewall - The Receptionist</span>
             </div>
+            <!-- Eva Encryption -->
             <div class="hover-effect" style="top: 20%; left: 44.5%; width: 10%; height: 20%;" onclick="navigateToPage('guilty.html')">
                 <span class="tooltip">Eva Encryption - The Sales Representative</span>
             </div>
+            <!-- Steve Sweep -->
             <div class="hover-effect" style="top: 20%; left: 61.5%; width: 10%; height: 20%;" onclick="navigateToPage('guilty.html')">
                 <span class="tooltip">Steve Sweep - The Maintenance Manager</span>
             </div>
-            <div class="hover-effect" style="top: 20%; left: 78.5%; width: 10%; height: 20%;" onclick="navigateToPage('not.html?name=frank')">
+            <!-- Frank Phisher -->
+            <div class="hover-effect" style="top: 20%; left: 78.5%; width: 10%; height: 20%;" onclick="openNotModal('frank')">
                 <span class="tooltip">Frank Phisher - The Marketing Director</span>
             </div>
         </div>
     </div>
+
+    <!-- Modal for 'Not Guilty' Characters -->
+    <div id="notModal" class="modal-overlay">
+        <div class="modal-content">
+            <!-- Profile Picture Container with Reject Cross -->
+            <div class="profile-picture-container">
+                <img id="modalImage" src="" alt="Character Image" class="profile-picture">
+                <!-- Reject Cross Animation -->
+                <div class="reject-cross">
+                    <div class="line line1"></div>
+                    <div class="line line2"></div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="text-content">
+                <h1 id="modalTitle">Title</h1>
+                <p id="modalSubtitle">Subtitle</p>
+                <button class="close-button" onclick="closeModal()">TRY AGAIN!</button>
+            </div>
+        </div>
+        <!-- Sound Effect -->
+        <audio id="cross-sound" src="static/bg/wrong.mp3" preload="auto"></audio>
     </div>
 
-    <!-- JavaScript for Navigation with Animation -->
+    <!-- JavaScript for Navigation and Modal Handling -->
     <script>
         function navigateToPage(url) {
             document.body.classList.add("fade-out");
@@ -104,17 +310,59 @@
                 window.location.href = url;
             }, 500);
         }
-    </script>
 
-    <script>
-        // play audio
-        var audio = new Audio('static/bg/verdict.mp3');
-        // loop
-        audio.loop = true;
-        audio.play().catch(error => {
+        // Function to open the modal with content based on character
+        function openNotModal(characterName) {
+            // Prepare content based on characterName
+            let title = '';
+            let subtitle = '';
+            let imageSrc = '';
+
+            if (characterName === 'fiona') {
+                title = "It Wasn't Fiona.";
+                subtitle = "Fiona's thoroughness in checking visitor credentials and her secure storage of visitor logs helped prevent unauthorized access to the office.";
+                imageSrc = 'static/bg/firewall.png';
+            } else if (characterName === 'clark') {
+                title = "It Wasn’t Clark.";
+                subtitle = "Clark’s careful handling of sensitive documents and his regular review of security protocols helped him prevent data breaches.";
+                imageSrc = 'static/bg/cloud.png';
+            } else if (characterName === 'frank') {
+                title = "It Wasn’t Frank.";
+                subtitle = "Frank’s awareness of security best practices and his use of strong passwords and antivirus software helped him stay safe.";
+                imageSrc = 'static/bg/director.png';
+            } else {
+                // Default case
+                title = "Not the correct character.";
+                subtitle = "";
+                imageSrc = 'static/bg/default.png'; // Provide a default image if needed
+            }
+
+            // Set modal content
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalSubtitle').textContent = subtitle;
+            document.getElementById('modalImage').src = imageSrc;
+
+            // Show the modal
+            document.getElementById('notModal').classList.add('active');
+
+            // Play wrong.mp3
+            var audioWrong = document.getElementById('cross-sound');
+            audioWrong.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById('notModal').classList.remove('active');
+        }
+
+        // Play background music
+        var bgAudio = new Audio('static/bg/verdict.mp3');
+        bgAudio.loop = true;
+        bgAudio.play().catch(error => {
             console.error("Error playing audio:", error);
         });
-
     </script>
 </body>
 </html>
