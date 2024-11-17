@@ -5,66 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>James Bytes</title>
+    <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
         body {
-            background-image: url('static/bg/Picture1.png');
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-        }
-
-        .logo-text {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 32px;
-            font-weight: bold;
-            color: white;
-            text-align: center;
             font-family: 'Roboto', sans-serif;
+            margin: 0;
+            /* Removed overflow: hidden to allow scrolling */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            background-color: #000; /* Fallback color */
         }
 
-        .agent-text {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            font-family: 'Roboto', sans-serif;
+        /* Overlay Styles */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        .agent-text .title {
-            font-size: 24px;
-            font-style: italic;
-            font-weight: 400;
+        .overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
 
-        .agent-text .agent-code {
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
-        .agent-text .subtext {
-            font-size: 18px;
-            color: red;
-            margin-top: 10px;
-            font-weight: 400;
-        }
-
-        .start-button {
-            position: absolute;
-            top: 65%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        /* Start Your Journey Button Styles */
+        .start-button-overlay {
             background-color: #f44336;
             color: white;
-            padding: 15px 30px;
+            padding: 20px 40px;
             border-radius: 30px;
             font-size: 24px;
             font-weight: bold;
@@ -75,48 +55,358 @@
             cursor: pointer;
         }
 
-        .start-button:hover {
-            transform: translate(-50%, -50%) scale(1.1);
+        .start-button-overlay:hover {
+            transform: scale(1.1);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
         }
 
-        .start-button:active {
-            transform: translate(-50%, -50%) scale(1);
+        .start-button-overlay:active {
+            transform: scale(1);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            width: 100vw;
+            height: 100vh;
+            background-image: url('static/james.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transform: translateX(-100%);
+            transition: transform 5s ease; /* Increased duration to 5 seconds */
+            z-index: 10;
+            background-color: #000; /* Ensure black background for borders */
+        }
+
+        .main-content.visible {
+            transform: translateX(0);
+        }
+
+        /* Logo Styles */
+        .logo-text {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            z-index: 20;
+        }
+
+        /* Agent Text Styles */
+        .agent-text {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 20;
+        }
+
+        .agent-text .title {
+            font-size: 24px;
+            font-style: italic;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .agent-text .agent-code {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .agent-text .subtext {
+            font-size: 18px;
+            color: red;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        /* Start Game Button Styles */
+        .start-game-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 35px;            
+            border: none;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            margin: 20px;
+        }
+
+        .start-game-button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .start-game-button:active {
+            background-color: #3e8e41;
+            transform: scale(1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animated Button with Moving Image Styles */
+        .animated-button {
+            position: relative;
+            background-color: #f44336;
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            margin: 20px;
+        }
+
+        .animated-button:hover {
+            background-color: #f44336;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .animated-button:active {
+            background-color: #f44336;
+            transform: scale(1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .animated-button img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            transform: translate(-50%, -50%);
+            animation: moveSlowly 5s linear infinite; /* Adjusted to match new speed if needed */
+        }
+
+        @keyframes moveSlowly {
+            0% {
+                transform: translate(-50%, -50%) translateY(0);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) translateY(10px);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) translateY(0);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .logo-text {
+                font-size: 24px;
+            }
+
+            .agent-text .title {
+                font-size: 20px;
+            }
+
+            .agent-text .agent-code {
+                font-size: 36px;
+            }
+
+            .agent-text .subtext {
+                font-size: 16px;
+            }
+
+            .start-button-overlay {
+                font-size: 20px;
+                padding: 15px 30px;
+            }
+
+            .start-game-button,
+            .animated-button {
+                font-size: 18px;
+                padding: 12px 28px;
+            }
+
+            .animated-button img {
+                width: 25px;
+                height: 25px;
+            }
+
+            /* Adjust Main Content for Mobile */
+            .main-content {
+                background-size: contain; /* Ensure the entire image fits */
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: #000; /* Black borders */
+                /* Adjust height if needed */
+                height: auto;
+                min-height: 100vh;
+                padding-top: 60px; /* To accommodate the logo */
+                padding-bottom: 60px; /* To accommodate the button */
+                box-sizing: border-box;
+            }
+
+            /* Ensure the Start Game Button is visible and accessible */
+            .main-content .start-game-button {
+                margin: 20px 0;
+            }
+        }
+
+        /* Additional Media Queries for Better Responsiveness */
+        @media (max-width: 400px) {
+            .logo-text {
+                font-size: 20px;
+            }
+
+            .agent-text .title {
+                font-size: 18px;
+            }
+
+            .agent-text .agent-code {
+                font-size: 30px;
+            }
+
+            .agent-text .subtext {
+                font-size: 14px;
+            }
+
+            .start-button-overlay {
+                font-size: 18px;
+                padding: 12px 25px;
+            }
+
+            .start-game-button,
+            .animated-button {
+                font-size: 16px;
+                padding: 10px 25px;
+            }
+
+            .animated-button img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .main-content {
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
         }
     </style>
 </head>
 
-<body class="flex items-center justify-center h-screen bg-gray-800 relative">
+<body class="relative">
 
     <!-- James Bytes Logo -->
     <img src="static/bg/logo.png" alt="James Bytes Logo" class="logo-text">
 
-
-    <!-- Cyber-Secret Agent Text -->
+    <!-- Agent Text (Optional: You can uncomment if needed)
     <div class="agent-text">
-        <div class="title"
-        style="font-weight: 1000; font-style: italic; font-size: 25px; "
-        >Cyber-Secret</div>
-        <div class="agent-code"
-        style="font-weight: 1000; font-style: italic; font-size: 50px; "
-        >AGENT
+        <div class="title">
+            Cyber-Secret
         </div>
-        <div
-        style="font-weight: 1000; font-style: italic;"
-        >0101011</div>
+        <div class="agent-code">
+            AGENT
+        </div>
+        <div class="subtext">
+            0101011
+        </div>
+    </div>
+    -->
+
+    <!-- Overlay with Start Your Journey Button -->
+    <div id="overlay" class="overlay">
+        <div class="start-button-overlay" onclick="startJourney()" aria-label="Start Your Journey">
+            Start Your Journey
+        </div>
     </div>
 
-    <!-- Start Button -->
-    <div class="start-button" onclick="startJourney(event)">
-        Start your Journey
+    <!-- Main Content -->
+    <div id="main-content" class="main-content">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <!-- Animated Button with Moving Image -->
+        <button class="animated-button" onclick="startGame()" aria-label="Start Game with Animation">
+            Start Game
+            &rarr;
+            <!-- Add an image inside the button if needed -->
+            <!-- <img src="path_to_image.png" alt="Animated Icon"> -->
+        </button>
     </div>
+
+    <!-- Background Music -->
+    <audio id="background-audio" loop>
+        <source src="static/StartingMusic.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
-        // Function to handle game start
-        function startJourney(event) {
-            window.location.href = "start.html"; // Redirect to the start page
+        /**
+         * Function to start the journey:
+         * - Hides the overlay
+         * - Plays background music
+         * - Reveals the main content with a sliding effect
+         */
+        function startJourney() {
+            // Get overlay and main content elements
+            const overlay = document.getElementById('overlay');
+            const mainContent = document.getElementById('main-content');
+            const audio = document.getElementById('background-audio');
+
+            // Hide the overlay with a fade-out effect
+            overlay.classList.add('hidden');
+
+            // Play the background music
+            audio.play().catch(error => {
+                console.log("Audio play was prevented:", error);
+            });
+
+            // Make the main content visible with a sliding effect
+            mainContent.classList.add('visible');
         }
+
+        /**
+         * Function to start the game:
+         * - Redirects to missionbrief.html
+         */
+        function startGame() {
+            // Redirect to missionbrief.html
+            window.location.href = 'missionbrief.html';
+        }
+
+        /**
+         * Function to set the animation speed of the moving image in the animated button
+         * @param {number} speedInSeconds - The desired animation duration in seconds
+         */
+        function setAnimationSpeed(speedInSeconds) {
+            const animatedImage = document.querySelector('.animated-button img');
+            if (animatedImage) {
+                animatedImage.style.animationDuration = `${speedInSeconds}s`;
+            }
+        }
+
+        // Set the animation speed to 5 seconds for a slower effect
+        setAnimationSpeed(5);
     </script>
 
 </body>

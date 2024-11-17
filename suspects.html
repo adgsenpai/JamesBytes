@@ -22,9 +22,33 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
-            overflow: hidden;
+            /* Removed overflow: hidden to allow scrolling */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
+        /* Logo Styling */
+        .logo {
+            width: 150px;
+            margin: 20px auto;
+        }
+
+        /* Heading Styles */
+        h1 {
+            color: #FFFFFF;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            font-weight: semi-bold;
+            margin-bottom: 20px;
+        }
+
+        /* View Button Styles */
         .view-button {
             font-size: 1.5rem;
             padding: 15px 30px;
@@ -40,38 +64,28 @@
             background-color: #FF3B2D;
         }
 
+        /* Profile Container */
         .profile-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px; /* Increased gap for better spacing */
-            padding: 30px; /* Increased padding */
+            gap: 20px;
+            padding: 30px;
         }
 
-        /* Profile Animation */
-        @keyframes fadeInScaleUp {
-            0% {
-                opacity: 0;
-                transform: scale(1.5);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
+        /* Profile Card Styles */
         .profile {
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             text-align: center;
-            width: 200px; /* Increased width */
+            width: 200px;
             opacity: 0;
             animation: fadeInScaleUp 1s ease forwards;
             cursor: pointer;
             border: 3px solid transparent;
+            transition: border-color 0.3s;
         }
 
         .profile:nth-child(1) {
@@ -104,8 +118,8 @@
         }
 
         .profile-text {
-            padding: 15px; /* Increased padding */
-            font-size: 1.1rem; /* Increased font size */
+            padding: 15px;
+            font-size: 1.1rem;
         }
 
         /* Modal Styles */
@@ -121,6 +135,8 @@
             align-items: center;
             z-index: 30;
             animation: scaleDown 0.3s forwards;
+            padding: 20px; /* Added padding for better spacing on small screens */
+            box-sizing: border-box;
         }
 
         @keyframes scaleDown {
@@ -138,23 +154,21 @@
         .modal-content {
             background-color: #fff;
             border-radius: 10px;
-            width: 85%; /* Increased width */
-            max-width: 800px; /* Increased max-width */
+            width: 85%;
+            max-width: 800px;
             max-height: 90vh;
-            /* Ensure modal doesn't exceed viewport height */
-            padding: 30px; /* Increased padding */
+            padding: 30px;
             position: relative;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             animation: fadeInScaleUp 0.5s ease forwards;
             overflow-y: auto;
-            /* Add scroll if content exceeds modal height */
         }
 
         .close-modal {
             position: absolute;
-            top: 15px; /* Increased top position */
-            right: 20px; /* Increased right position */
-            font-size: 2.5rem; /* Increased font size */
+            top: 15px;
+            right: 20px;
+            font-size: 2.5rem;
             color: #333;
             cursor: pointer;
         }
@@ -166,10 +180,10 @@
         }
 
         .profile-content img {
-            width: 180px; /* Increased width */            
+            width: 180px;
             object-fit: cover;
-            margin-bottom: 25px; /* Increased margin */
-            transition: transform 0.5s ease, opacity 0.5s ease; /* For slide-up animation */
+            margin-bottom: 25px;
+            transition: transform 0.5s ease, opacity 0.5s ease;
         }
 
         .profile-content .text-left {
@@ -177,23 +191,24 @@
             width: 100%;
         }
 
-        /* Ensure white spaces are preserved and text wraps properly */
+        /* Description Text */
         #modalSuspectDescription {
             white-space: pre-wrap;
             word-wrap: break-word;
-            margin-top: 15px; /* Increased margin */
-            font-size: 1.1rem; /* Increased font size */
+            margin-top: 15px;
+            font-size: 1.1rem;
         }
 
+        /* Buttons */
         .btn-notes,
         .btn-close {
-            padding: 12px 25px; /* Increased padding */
-            margin: 12px 5px 0 0; /* Increased margin */
+            padding: 12px 25px;
+            margin: 12px 5px 0 0;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
-            font-size: 1rem; /* Increased font size */
+            font-size: 1rem;
         }
 
         .btn-notes {
@@ -215,15 +230,16 @@
         }
 
         .done-button {
-            font-size: 1.3rem; /* Increased font size */
-            padding: 18px 35px; /* Increased padding */
+            font-size: 1.3rem;
+            padding: 18px 35px;
             background-color: #808080;
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin-top: 25px; /* Increased margin */
+            margin: 25px auto; /* Center the button */
+            display: block;
         }
 
         .done-button:hover {
@@ -267,11 +283,57 @@
             background-color: #555;
         }
 
-        /* Mobile-specific styles */
-        @media (max-width: 600px) {
+        /* Profile Animation */
+        @keyframes fadeInScaleUp {
+            0% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            /* Tablets and larger smartphones */
             .profile-container {
-                padding: 20px; /* Adjusted padding for mobile */
-                gap: 15px; /* Adjusted gap for mobile */
+                padding: 25px;
+                gap: 18px;
+            }
+
+            .profile {
+                width: 180px;
+            }
+
+            .profile-text {
+                padding: 12px;
+                font-size: 1rem;
+            }
+
+            .profile-content img {
+                width: 160px;
+                margin-bottom: 20px;
+            }
+
+            .modal-content {
+                padding: 25px;
+            }
+
+            .done-button {
+                font-size: 1.2rem;
+                padding: 16px 30px;
+                margin: 20px auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            /* Mobile Devices */
+            .profile-container {
+                padding: 20px;
+                gap: 15px;
             }
 
             .profile {
@@ -279,24 +341,64 @@
             }
 
             .profile-text {
-                padding: 10px; /* Adjusted padding */
-                font-size: 1rem; /* Adjusted font size */
+                padding: 10px;
+                font-size: 1rem;
             }
 
             .profile-content img {
-                width: 150px; /* Adjusted for mobile */
-                height: 150px; /* Adjusted for mobile */
+                width: 150px;
+                
             }
 
             .modal-content {
                 width: 90%;
-                padding: 20px; /* Adjusted padding for mobile */
+                padding: 20px;
             }
 
+            .h3 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;                
+            }
             .done-button {
                 font-size: 1rem;
-                padding: 10px 20px;
+                padding: 12px 25px;
                 margin-top: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+
+            .close-modal {
+                font-size: 2rem;
+            }
+
+            #modalSuspectDescription {
+                font-size: 1rem;
+            }
+
+            .btn-notes,
+            .btn-close {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .next-button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .bg-music-toggle {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+                bottom: 15px;
+                right: 15px;
             }
         }
     </style>
@@ -304,16 +406,20 @@
 
 <body>
     <!-- Logo -->
-    <img src="static/bg/logo.png" alt="James Bytes Logo" class="mb-8">
+    <img src="static/bg/logo.png" alt="James Bytes Logo" class="logo mb-8">
 
-    <h1 class="text-white text-4xl font-bold mb-4">The Suspects</h1>
-    <h3 class="text-white text-xl font-semibold mb-6">Click on a suspect to view further case information:</h3>
+    <!-- Headings -->
+    <h1>The Suspects</h1>
+    <p
+    class="text-white"
+    >Click on a suspect to view further case information:</p>
 
     <!-- Suspects Grid -->
     <div class="profile-container" id="profileContainer">
         <!-- Suspect Cards will be dynamically loaded -->
     </div>
 
+    <!-- Done Investigating Button -->
     <button class="done-button" onclick="doneInvestigating()">Done Investigating</button>
 
     <!-- Modal Structure -->
@@ -324,9 +430,9 @@
                 <img id="modalSuspectImage" class="suspect-image" src="" alt="Suspect Image" />
                 <div class="text-left">
                     <h2 id="modalSuspectName" class="text-2xl font-bold"></h2>
-                    <h3 id="modalSuspectTitle" class="text-xl"></h3>
+                    <h3 id="modalSuspectTitle" class="text-xl text-black"></h3>
                     <p id="modalSuspectDescription"></p>
-                    <br>
+                    <br> 
                     <button id="modalBtnNotes" class="btn-notes">Case Notes</button>
                     <button class="btn-close" onclick="closeModal()">Close</button>
                     <button id="nextSuspectBtn" class="next-button" style="display: none;">Next Suspect</button>
@@ -335,7 +441,6 @@
         </div>
     </div>
 
-    
     <!-- Background Music Audio Element -->
     <audio id="backgroundMusic" loop>
         <source src="static/2.mp3" type="audio/mpeg">
@@ -346,12 +451,14 @@
         // Audio Elements
         const cameraSound = new Audio('static/Camera-1.mp3');
         const backgroundMusic = document.getElementById('backgroundMusic');
-        const bgMusicToggle = document.getElementById('bgMusicToggle');
+        
 
-        // play background music on loop
+        // Play background music on loop
         backgroundMusic.play().catch(error => {
             console.error("Background music playback failed:", error);
         });
+
+        
 
         // Define the Suspect class
         class Suspect {
@@ -427,7 +534,9 @@
                     confirmButtonText: 'Close',
                     background: '#333',
                     color: '#fff',
-                    confirmButtonColor: '#3085d6'
+                    confirmButtonColor: '#3085d6',
+                    imageWidth: '100%', // Make image responsive
+                    imageHeight: 'auto'
                 });
             }
         }
@@ -495,7 +604,8 @@
                     textDiv.classList.add('profile-text');
                     textDiv.innerHTML = `
                         <h2>${suspect.name}</h2>
-                        <h3>Role: ${suspect.title}</h3>
+                        <h2                        
+                        >Role: ${suspect.title}</h2>
                     `;
 
                     profileDiv.appendChild(img);
@@ -521,8 +631,6 @@
             renderModal(currentIndex);
 
             document.getElementById("suspectModal").style.display = "flex";
-
-
 
             document.getElementById("modalBtnNotes").onclick = () => currentActiveSuspect.showCaseNotes();
 
@@ -606,7 +714,6 @@
 
         // Function to handle "Done Investigating" button
         function doneInvestigating() {
-           
             setTimeout(() => {
                 window.location.href = 'step2.html';
             }, 1000); // 1 second delay
