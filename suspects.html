@@ -5,16 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>James Bytes - Suspects</title>
+    <!-- Tailwind CSS for styling -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Alpine.js for typewriter effect in modal -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
     <!-- Preload Audio Files -->
     <link rel="preload" href="static/typewriter-1.mp3" as="audio">
     <link rel="preload" href="static/fileflip.mp3" as="audio">
     <link rel="preload" href="static/2.mp3" as="audio">
     <link rel="preload" href="static/Secret Policeman Edited.mp3" as="audio">
     <link rel="preload" href="static/Camera-1.mp3" as="audio">
-    <link rel="preload" href="static/2.mp3" as="audio"> <!-- Preload Background Music -->
     <style>
         body {
             background-color: #1E1E1E;
@@ -22,9 +24,8 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
-            /* Removed overflow: hidden to allow scrolling */
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
         }
 
         /* Logo Styling */
@@ -135,7 +136,7 @@
             align-items: center;
             z-index: 30;
             animation: scaleDown 0.3s forwards;
-            padding: 20px; /* Added padding for better spacing on small screens */
+            padding: 20px;
             box-sizing: border-box;
         }
 
@@ -191,12 +192,31 @@
             width: 100%;
         }
 
-        /* Description Text */
-        #modalSuspectDescription {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            margin-top: 15px;
-            font-size: 1.1rem;
+        /* Description Text with Blinking Caret */
+        .blink-caret::after {
+            content: '|';
+            animation: blink 0.7s steps(1) infinite;
+            color: black;
+        }
+
+        @keyframes blink {
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            50.01%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Additional Image Styling */
+        #modalAdditionalImage {            
+            height: auto;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: none; /* Initially hidden */
         }
 
         /* Buttons */
@@ -238,7 +258,7 @@
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin: 25px auto; /* Center the button */
+            margin: 25px auto;
             display: block;
         }
 
@@ -347,7 +367,7 @@
 
             .profile-content img {
                 width: 150px;
-                
+
             }
 
             .modal-content {
@@ -357,8 +377,9 @@
 
             .h3 {
                 font-size: 1.3rem;
-                margin-bottom: 15px;                
+                margin-bottom: 15px;
             }
+
             .done-button {
                 font-size: 1rem;
                 padding: 12px 25px;
@@ -410,9 +431,7 @@
 
     <!-- Headings -->
     <h1>The Suspects</h1>
-    <p
-    class="text-white"
-    >Click on a suspect to view further case information:</p>
+    <p class="text-white">Click on a suspect to view further case information:</p>
 
     <!-- Suspects Grid -->
     <div class="profile-container" id="profileContainer">
@@ -422,21 +441,22 @@
     <!-- Done Investigating Button -->
     <button class="done-button" onclick="doneInvestigating()">Done Investigating</button>
 
-    <!-- Modal Structure -->
+    <!-- Modal Structure with Alpine.js for Typewriter Effect -->
     <div id="suspectModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalSuspectName">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
-            <div class="profile-content">
-                <img id="modalSuspectImage" class="suspect-image" src="" alt="Suspect Image" />
-                <div class="text-left">
+        <div class="modal-content" x-data="modalTypewriter()" x-init="init()">
+            <span class="close-modal" @click="closeModal()">&times;</span>
+            <div class="profile-content">                
+                <img id="modalAdditionalImage" src="" alt="Additional Image" />
+                <div class="text-left blink-caret" x-html="typedDescription"></div>
+
+                <div class="mt-4">
                     <h2 id="modalSuspectName" class="text-2xl font-bold"></h2>
                     <h3 id="modalSuspectTitle" class="text-xl text-black"></h3>
-                    <p id="modalSuspectDescription"></p>
-                    <br> 
-                    <button id="modalBtnNotes" class="btn-notes">Case Notes</button>
-                    <button class="btn-close" onclick="closeModal()">Close</button>
-                    <button id="nextSuspectBtn" class="next-button" style="display: none;">Next Suspect</button>
                 </div>
+
+                <button id="modalBtnNotes" class="btn-notes" @click="showCaseNotes()">Case Notes</button>
+                <button class="btn-close" @click="closeModal()">Close</button>
+                <button id="nextSuspectBtn" class="next-button" style="display: none;" @click="navigateToNextSuspect()">Next Suspect</button>
             </div>
         </div>
     </div>
@@ -451,74 +471,36 @@
         // Audio Elements
         const cameraSound = new Audio('static/Camera-1.mp3');
         const backgroundMusic = document.getElementById('backgroundMusic');
-        
 
         // Play background music on loop
         backgroundMusic.play().catch(error => {
             console.error("Background music playback failed:", error);
         });
 
-        
-
-        // Define the Suspect class
+        // Define the Suspect class with additionalImage
         class Suspect {
-            constructor(name, title, description, image, notesImage) {
+            constructor(name, title, description, image, notesImage, additionalImage) {
                 this.name = name;
                 this.title = title;
                 this.description = description;
                 this.image = image;
                 this.notesImage = notesImage;
-                this.typingTimeout = null; // Initialize typingTimeout
+                this.additionalImage = additionalImage; // New additional image
+                this.typingTimeout = null;
                 this.originalAudio = new Audio('static/typewriter-1.mp3'); // Typewriter sound effect
                 this.originalAudio.loop = false;
             }
 
             renderInModal() {
                 document.getElementById("modalSuspectName").innerText = this.name;
-                document.getElementById("modalSuspectTitle").innerText = this.title;
-                document.getElementById("modalSuspectDescription").innerText = ""; // Clear previous text
-                document.getElementById("modalSuspectImage").src = this.image;
-                this.clearTyping();
-                this.typeWriterEffect(this.description, "modalSuspectDescription", 100);
-            }
+                document.getElementById("modalSuspectTitle").innerText = this.title;                
+                document.getElementById("modalAdditionalImage").src = this.additionalImage;
+                document.getElementById("modalAdditionalImage").style.display = "block"; // Show additional image
 
-            clearTyping() {
-                if (this.typingTimeout) {
-                    clearTimeout(this.typingTimeout);
-                    this.typingTimeout = null;
+                // Trigger Alpine.js to start typewriter effect
+                if (window.modalComponent) {
+                    window.modalComponent.setDescription(this.description);
                 }
-                if (this.originalAudio) {
-                    this.originalAudio.pause();
-                    this.originalAudio.currentTime = 0;
-                }
-            }
-
-            typeWriterEffect(text, elementId, speed) {
-                const element = document.getElementById(elementId);
-                let index = 0;
-
-                const type = () => {
-                    if (index < text.length) {
-                        element.innerText += text.charAt(index);
-                        index++;
-
-                        // Play sound for non-space characters to avoid unnecessary noise
-                        if (text.charAt(index - 1) !== ' ') {
-                            this.originalAudio.currentTime = 0;
-                            this.originalAudio.play().catch(error => {
-                                console.error("Typewriter sound playback failed:", error);
-                            });
-                        }
-
-                        this.typingTimeout = setTimeout(type, speed);
-                    }
-                    // if at end stop audio
-                    else {
-                        this.originalAudio.pause();
-                    }
-                };
-
-                type();
             }
 
             showCaseNotes() {
@@ -541,42 +523,47 @@
             }
         }
 
-        // Suspects data
+        // Suspects data with additionalImage
         const suspects = {
             clark: new Suspect(
                 "Clark Cloud",
                 "The Office Manager",
                 "Clark is the office manager and oversees all operations. His knowledge of the company’s systems and procedures makes him a valuable asset. However, his busy schedule and the pressure of his role could make him vulnerable to mistakes and oversights.",
                 "static/bg/clarkcloud.png",
-                "static/bg/notebookClark.png"
+                "static/bg/notebookClark.png",
+                "static/bg/cloud.png" // Additional image
             ),
             fiona: new Suspect(
                 "Fiona Firewall",
                 "The Receptionist",
                 "As the receptionist, Fiona is the first line of defense against unauthorized access. Her vigilance and attention to detail make her a trusted team member. However, her lack of technical expertise could make her vulnerable to social engineering attacks.",
                 "static/bg/fionaavatar.png",
-                "static/bg/notebookFiona.png"
+                "static/bg/notebookFiona.png",
+                "static/bg/firewall.png" // Additional image
             ),
             eva: new Suspect(
                 "Eva Encryption",
                 "The Sales Representative",
                 "Eva is a high-achieving sales representative who is always on the go. Her dedication to her clients often leads her to work long hours and use personal devices for work purposes. This could make her more susceptible to security risks.",
                 "static/bg/eva.png",
-                "static/bg/notebookEva.png"
+                "static/bg/notebookEva.png",
+                "static/bg/encryption.png" // Additional image
             ),
             steve: new Suspect(
                 "Steve Sweep",
                 "The Maintenance Manager",
                 "The office's maintenance manager, Steve, is always on the move with his team, ensuring everything is sparkling clean. His access to almost all office areas makes him a familiar face, but his lack of tech-savvy could be a liability.",
                 "static/bg/steve.png",
-                "static/bg/notebookSteve.png"
+                "static/bg/notebookSteve.png",
+                "static/bg/sweep.png" // Additional image
             ),
             frank: new Suspect(
                 "Frank Phisher",
                 "The Marketing Director",
                 "As the marketing director, Frank is responsible for promoting the company’s brand and reaching new customers. His creativity and strategic thinking make him a valuable team member. However, his frequent use of technology and online tools could make him a cyberattack target.",
                 "static/bg/frank.png",
-                "static/bg/notebookFrank.png"
+                "static/bg/notebookFrank.png",
+                "static/bg/director.png" // Additional image
             ),
         };
 
@@ -604,8 +591,7 @@
                     textDiv.classList.add('profile-text');
                     textDiv.innerHTML = `
                         <h2>${suspect.name}</h2>
-                        <h2                        
-                        >Role: ${suspect.title}</h2>
+                        <h2>Role: ${suspect.title}</h2>
                     `;
 
                     profileDiv.appendChild(img);
@@ -632,15 +618,10 @@
 
             document.getElementById("suspectModal").style.display = "flex";
 
-            document.getElementById("modalBtnNotes").onclick = () => currentActiveSuspect.showCaseNotes();
-
-            // Setup Next Suspect Button
+            // Setup Next Suspect Button visibility
             const nextBtn = document.getElementById("nextSuspectBtn");
             if (currentIndex < suspectKeys.length - 1) {
                 nextBtn.style.display = "inline-block";
-                nextBtn.onclick = () => {
-                    navigateToNextSuspect();
-                };
             } else {
                 nextBtn.style.display = "none";
             }
@@ -650,14 +631,18 @@
         function navigateToNextSuspect() {
             if (currentIndex >= suspectKeys.length - 1) return; // No more suspects
 
-            // Slide out current image
-            const image = document.getElementById("modalSuspectImage");
-            image.style.transform = "translateY(-100%)";
-            image.style.opacity = "0";
-            image.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+     
+
+            // Slide out additional image
+            const additionalImage = document.getElementById("modalAdditionalImage");
+            additionalImage.style.transform = "translateY(-100%)";
+            additionalImage.style.opacity = "0";
+            additionalImage.style.transition = "transform 0.5s ease, opacity 0.5s ease";
 
             // Pause typing effect
-            currentActiveSuspect.clearTyping();
+            if (window.modalComponent) {
+                window.modalComponent.clearTyping();
+            }
 
             setTimeout(() => {
                 currentIndex++;
@@ -673,10 +658,12 @@
             const suspect = suspects[key];
             if (suspect) {
                 suspect.renderInModal();
-                const image = document.getElementById("modalSuspectImage");
-                image.style.transform = "translateY(0)";
-                image.style.opacity = "1";
-                image.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+
+
+                const additionalImage = document.getElementById("modalAdditionalImage");
+                additionalImage.style.transform = "translateY(0)";
+                additionalImage.style.opacity = "1";
+                additionalImage.style.transition = "transform 0.5s ease, opacity 0.5s ease";
 
                 // Update Next Suspect Button visibility
                 const nextBtn = document.getElementById("nextSuspectBtn");
@@ -694,18 +681,21 @@
             modal.style.display = "none";
 
             // Clear typing effect of the currently active suspect
-            if (currentActiveSuspect) {
-                currentActiveSuspect.clearTyping();
-                currentActiveSuspect = null;
+            if (window.modalComponent) {
+                window.modalComponent.clearTyping();
             }
+            currentActiveSuspect = null;
 
-            document.getElementById("modalSuspectDescription").innerText = "";
-
-            // Reset image position
+            // Reset images
             const image = document.getElementById("modalSuspectImage");
             image.style.transform = "translateY(0)";
             image.style.opacity = "1";
             image.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+
+            const additionalImage = document.getElementById("modalAdditionalImage");
+            additionalImage.style.transform = "translateY(0)";
+            additionalImage.style.opacity = "1";
+            additionalImage.style.transition = "transform 0.5s ease, opacity 0.5s ease";
 
             // Hide Next Suspect Button
             const nextBtn = document.getElementById("nextSuspectBtn");
@@ -723,6 +713,98 @@
         window.onload = () => {
             loadSuspectTiles();
         };
+
+        // Alpine.js Component for Modal Typewriter Effect
+        function modalTypewriter() {
+            return {
+                typedDescription: '',
+                fullDescription: '',
+                index: 0,
+                typingSpeed: 45, // Milliseconds per character
+                typingSound: null,
+                typingComplete: false,
+
+                init() {
+                    // Initialize typing sound
+                    this.typingSound = new Audio('static/type-writing-6834.mp3');
+                    this.typingSound.loop = false;
+                    this.typingSound.volume = 1;
+
+                    // Reference to the component for external control
+                    window.modalComponent = this;
+                },
+
+                setDescription(text) {
+                    this.fullDescription = text;
+                    this.typedDescription = '';
+                    this.index = 0;
+                    this.typingComplete = false;
+
+                    // Play typing sound
+                    this.typingSound.currentTime = 0;
+                    this.typingSound.play().catch(error => {
+                        console.error('Typing sound playback failed:', error);
+                    });
+
+                    // Start typing
+                    this.typeText();
+                },
+
+                typeText() {
+                    if (this.index < this.fullDescription.length) {
+                        const char = this.fullDescription[this.index];
+                        if (char !== '\n') {
+                            this.typedDescription += char;
+                        } else {
+                            // Replace newline characters with <br> for HTML rendering
+                            this.typedDescription += '<br>';
+                        }
+                        this.index++;
+                        setTimeout(() => this.typeText(), this.typingSpeed);
+                    } else {
+                        // Typing complete
+                        this.typingComplete = true;
+                        this.typingSound.pause();
+                        this.typingSound.currentTime = 0;
+
+                        // Remove blinking caret by clearing the class
+                        const textContainer = document.querySelector('.blink-caret');
+                        if (textContainer) {
+                            textContainer.classList.remove('blink-caret');
+                        }
+                    }
+                },
+
+                clearTyping() {
+                    this.typedDescription = '';
+                    this.fullDescription = '';
+                    this.index = 0;
+                    this.typingComplete = false;
+                    this.typingSound.pause();
+                    this.typingSound.currentTime = 0;
+
+                    // Restore blinking caret
+                    const textContainer = document.querySelector('.blink-caret');
+                    if (textContainer) {
+                        textContainer.classList.add('blink-caret');
+                    }
+                },
+
+                showCaseNotes() {
+                    if (currentActiveSuspect) {
+                        currentActiveSuspect.showCaseNotes();
+                    }
+                },
+
+                closeModal() {
+                    closeModal();
+                },
+
+                navigateToNextSuspect() {
+                    navigateToNextSuspect();
+                }
+            };
+        }
     </script>
 
 </body>
