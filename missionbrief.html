@@ -5,10 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Breach Mission</title>
-    <!-- Load Alpine.js with defer to ensure it loads after HTML -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
     <!-- Tailwind CSS for styling -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Alpine.js for typewriter effect -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js"></script>
+    <!-- Preload Audio Files -->
+    <link rel="preload" href="static/typewriter-1.mp3" as="audio">
+    <link rel="preload" href="static/MissionBrief.wav" as="audio">
     <style>
         /* Blinking caret effect */
         .blink-caret::after {
@@ -33,9 +36,10 @@
 
 <body class="bg-gray-900 flex items-center justify-center min-h-screen text-white font-mono">
     <div class="text-center p-6 max-w-md" x-data="typewriterEffect()" x-init="init()">
-        <!-- Text Container with Blinking Caret -->
+        <!-- Logo -->
         <img src="static/bg/logo.png" alt="logo" class="w-32 mx-auto mb-4">
-        <div class="text-left blink-caret" x-html="missionText"></div>
+        <!-- Text Container with Blinking Caret -->
+        <div class="text-left blink-caret" x-html="typedDescription"></div>
 
         <!-- Accept Mission Button, initially hidden via x-show -->
         <button class="mt-8 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
@@ -44,44 +48,55 @@
         </button>
     </div>
 
+    <!-- Background Music Audio Element -->
+    <audio id="backgroundMusic" loop>
+        <source src="static/MissionBrief.wav" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
+        // Define the typing sound as a global variable
+        const typingSoundGlobal = new Audio('static/typewriter-1.mp3');
+        typingSoundGlobal.volume = 1; // Adjust volume as needed
+        typingSoundGlobal.loop = false; // Do not loop typing sound
+
+        // Alpine.js Component for Typewriter Effect
         function typewriterEffect() {
             return {
-                missionText: '',
-                fullText: `A well-known company has fallen victim to a major data breach.\n
+                typedDescription: '',
+                fullDescription: `A well-known company has fallen victim to a major data breach.\n
 Agent James Bytes is investigating but needs your help to crack the case.\n
 Check each suspect's case notes, comb through the clues and help him uncover the culprit!\n
 Remember: The truth is often hidden in plain sight, obscured by the shadows of assumption and the silhouettes of suspicion.`,
                 index: 0,
-                typingSpeed: 50, // Milliseconds per character
-                typingSound: null,
-                typingSoundTimeout: null, // To store the timeout reference
+                typingSpeed: 40, // Milliseconds per character
                 typingComplete: false,
 
                 init() {
-                    // Initialize the typing sound
-                    this.typingSound = new Audio('static/type-writing-6834.mp3');
-                    this.typingSound.loop = false; // Loop the sound during typing
-                    this.typingSound.volume = 1; // Adjust volume as needed
-
-                    // Play the typing sound
-                    this.typingSound.play().catch(error => {
+                    // Play typing sound
+                    typingSoundGlobal.currentTime = 0;
+                    typingSoundGlobal.play().catch(error => {
                         console.error('Typing sound playback failed:', error);
                     });
-                    
-  
+
                     // Start the typewriter effect
                     this.typeText();
+
+                    // Play background music via the <audio> element
+                    const backgroundMusic = document.getElementById('backgroundMusic');
+                    backgroundMusic.play().catch(error => {
+                        console.error("Background music playback failed:", error);
+                    });
                 },
 
                 typeText() {
-                    if (this.index < this.fullText.length) {
-                        const char = this.fullText[this.index];
+                    if (this.index < this.fullDescription.length) {
+                        const char = this.fullDescription[this.index];
                         if (char !== '\n') {
-                            this.missionText += char;
+                            this.typedDescription += char;
                         } else {
                             // Replace newline characters with <br> for HTML rendering
-                            this.missionText += '<br>';
+                            this.typedDescription += '<br>';
                         }
                         this.index++;
                         setTimeout(() => this.typeText(), this.typingSpeed);
@@ -89,8 +104,9 @@ Remember: The truth is often hidden in plain sight, obscured by the shadows of a
                         // Typing complete
                         this.typingComplete = true;
 
-                        // Stop and reset the typing sound
-                        this.stopTypingSound();
+                        // Stop typing sound
+                        typingSoundGlobal.pause();
+                        typingSoundGlobal.currentTime = 0;
 
                         // Remove the caret after typing is complete
                         const textContainer = document.querySelector('.blink-caret');
@@ -100,33 +116,12 @@ Remember: The truth is often hidden in plain sight, obscured by the shadows of a
                     }
                 },
 
-                stopTypingSound() {
-                    if (this.typingSound) {
-                        this.typingSound.pause();
-                        this.typingSound.currentTime = 0;
-                    }
-                    if (this.typingSoundTimeout) {
-                        clearTimeout(this.typingSoundTimeout);
-                        this.typingSoundTimeout = null;
-                    }
-                },
-
                 acceptMission() {
-                    //redirect
+                    // Redirect to the next step
                     window.location.href = "step1.html";
                 }
             };
         }
-
-        // Play background MissionBrief.wav once the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            var backgroundAudio = new Audio('static/MissionBrief.wav');
-            backgroundAudio.loop = true; // Loop background audio
-            backgroundAudio.volume = 0.3; // Adjust volume as needed
-            backgroundAudio.play().catch(error => {
-                console.error("Background audio playback failed:", error);
-            });
-        });
     </script>
 </body>
 

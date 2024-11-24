@@ -31,6 +31,18 @@
             background: rgba(255, 255, 255, 0.5);
         }
 
+        /* Number inside clickable area */
+        .clickable-area span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: red;
+            font-size: 1.5rem;
+            font-weight: bold;
+            pointer-events: none; /* Ensures the number doesn't interfere with click events */
+        }
+
         /* Button Styling */
         .continue-button {
             display: flex;
@@ -310,7 +322,7 @@
                 subtitle: 'In the purse you discover some used tissues :( and some weird scribbling that looks like a code',
                 imageUrl: 'static/bg/Clue1.Purse.png'
             }
-         
+
         ];
 
         let currentClueIndex = null; // Tracks the currently active clue
@@ -355,6 +367,16 @@
                 // Accessibility Enhancements
                 this.element.setAttribute('role', 'button');
                 this.element.setAttribute('aria-label', `Clue ${this.clueNumber}: ${this.title}`);
+                this.element.setAttribute('tabindex', '0'); // Make it focusable
+
+                // Create and append the number span
+                const numberSpan = document.createElement('span');
+                numberSpan.innerText = this.clueNumber;
+                // set font size
+                numberSpan.style.fontSize = '2rem';
+                // set font weight
+                numberSpan.style.fontWeight = 'bold';
+                this.element.appendChild(numberSpan);
 
                 this.container.appendChild(this.element);
             }
@@ -511,8 +533,8 @@
         function initializeClickableAreas() {
             const container = document.getElementById('imageContainer');
 
-           // Define your clickable areas here
-           const areas = [
+            // Define your clickable areas here
+            const areas = [
                 {
                     clueNumber: 1,
                     top: '35%',
@@ -573,22 +595,19 @@
             }, 500);
         }
 
-       
         /**
-         * Function to initialize everything after user interaction to comply with autoplay policies.
+         * Initialize everything after user interaction to comply with autoplay policies.
          */
 
+        window.addEventListener('DOMContentLoaded', () => {
             initializeClickableAreas();
             hideLoadingScreen();
- 
-        
-        
+
             const backgroundMusic = document.getElementById('backgroundMusic');
             backgroundMusic.play().catch(error => {
                 console.error("Background music playback failed:", error);
             });
-        
-
+        });
     </script>
 </body>
 
